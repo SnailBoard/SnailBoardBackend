@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.column.Columns;
-import ua.comsys.kpi.snailboard.user.User;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,10 +32,10 @@ public class Ticket {
     private Integer number;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
-    private List<TicketHistory> ticketHistories = new ArrayList<>();
+    private List<TicketHistory> ticketHistories;
 
     @ManyToMany(mappedBy = "tickets")
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "column_id")

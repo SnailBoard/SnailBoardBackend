@@ -1,4 +1,4 @@
-create table board
+create table IF NOT EXISTS  board
 (
     id          binary(255) not null,
     created_at  date,
@@ -8,7 +8,7 @@ create table board
     primary key (id)
 );
 
-create table columns
+create table IF NOT EXISTS  columns
 (
     id         binary(255) not null,
     created_at date,
@@ -17,7 +17,7 @@ create table columns
     primary key (id)
 );
 
-create table notification
+create table IF NOT EXISTS  notification
 (
     id      binary(255) not null,
     src_url varchar(255),
@@ -26,14 +26,14 @@ create table notification
     primary key (id)
 );
 
-create table roles
+create table IF NOT EXISTS  roles
 (
     id   binary(255) not null,
     name varchar(255),
     primary key (id)
 );
 
-create table statistic
+create table IF NOT EXISTS  statistic
 (
     id       binary(255) not null,
     tasks    integer,
@@ -43,7 +43,7 @@ create table statistic
     primary key (id)
 );
 
-create table team
+create table IF NOT EXISTS  team
 (
     id          binary(255) not null,
     created_at  date,
@@ -52,7 +52,7 @@ create table team
     primary key (id)
 );
 
-create table ticket
+create table IF NOT EXISTS  ticket
 (
     id        binary(255) not null,
     number    integer,
@@ -61,7 +61,7 @@ create table ticket
     primary key (id)
 );
 
-create table ticket_history
+create table IF NOT EXISTS  ticket_history
 (
     id                 binary(255) not null,
     change_date        date,
@@ -70,25 +70,25 @@ create table ticket_history
     primary key (id)
 );
 
-create table user_role
+create table IF NOT EXISTS  user_role
 (
     user_id binary(255) not null,
     role_id binary(255) not null
 );
 
-create table user_team
+create table IF NOT EXISTS  user_team
 (
     user_id binary(255) not null,
     team_id binary(255) not null
 );
 
-create table user_ticket
+create table IF NOT EXISTS  user_ticket
 (
     user_id   binary(255) not null,
     ticket_id binary(255) not null
 );
 
-create table usr
+create table IF NOT EXISTS  usr
 (
     id       binary(255) not null,
     email    varchar(255),

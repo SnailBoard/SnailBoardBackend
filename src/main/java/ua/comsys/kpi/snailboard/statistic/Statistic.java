@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.board.Board;
-import ua.comsys.kpi.snailboard.user.User;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
 import java.util.UUID;
