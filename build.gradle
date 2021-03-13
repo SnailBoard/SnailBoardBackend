@@ -30,9 +30,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
-    useJUnitPlatform()
-}
+// ci build should be done without bounding to external sources, this tests are bounded to db
+//test {
+//    useJUnitPlatform()
+//}
 
 flyway {
     url = 'jdbc:mysql://localhost:3306/snailboard'
