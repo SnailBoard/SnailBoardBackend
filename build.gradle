@@ -37,5 +37,5 @@ test {
 flyway {
     url = 'jdbc:mysql://localhost:3306/snailboard'
     user = 'root'
-    password = 'admin'
+    password = 'root'
 }
