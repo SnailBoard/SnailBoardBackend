@@ -30,7 +30,7 @@ jobs:
       matrix:
         python-version: [3.8]
         java-version: ['11']
-        appname: ['aws-codedeploy']
+        appname: ['aws-codedeploy-backend']
         deploy-group: ['prod']
         s3-bucket: ['aws-snail-board-deployments']
         s3-filename: ['prod-aws-snail-board-backend-${{ github.sha }}']
