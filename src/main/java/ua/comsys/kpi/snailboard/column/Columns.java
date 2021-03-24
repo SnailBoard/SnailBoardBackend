@@ -26,7 +26,7 @@ public class Columns {
     private UUID id;
 
     @Column
-    private String name;
+    private String code;
 
     @Column
     private LocalDate createdAt;

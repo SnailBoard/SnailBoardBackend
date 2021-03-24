@@ -24,10 +24,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    runtimeOnly 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 // ci build should be done without bounding to external sources, this tests are bounded to db
@@ -36,7 +39,7 @@ dependencies {
 //}
 
 flyway {
-    url = 'jdbc:mysql://localhost:3306/snailboard'
+    url = 'jdbc:postgresql://localhost:5432/snailboard'
     user = 'root'
     password = 'root'
 }

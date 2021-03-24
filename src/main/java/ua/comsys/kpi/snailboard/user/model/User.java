@@ -1,11 +1,11 @@
-package ua.comsys.kpi.snailboard.user;
+package ua.comsys.kpi.snailboard.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.notification.Notification;
-import ua.comsys.kpi.snailboard.role.Role;
+import ua.comsys.kpi.snailboard.role.model.Role;
 import ua.comsys.kpi.snailboard.statistic.Statistic;
 import ua.comsys.kpi.snailboard.team.Team;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
@@ -30,8 +30,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstName")
+    private String firstName;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -40,16 +40,16 @@ public class User {
     private String username;
 
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Statistic> statistics = new ArrayList<>();
+    private List<Statistic> statistics;
 
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notification> notifications = new ArrayList<>();
+    private List<Notification> notifications;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "user_team",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    private List<Team> teams = new ArrayList<>();
+    private List<Team> teams;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(name = "user_ticket",
@@ -57,9 +57,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ticket_id"))
     private List<Ticket> tickets = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles;
 }

@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.board.Board;
-import ua.comsys.kpi.snailboard.user.User;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ public class Team {
     private UUID id;
 
     @Column
-    private String name;
+    private String naming;
 
     @Column
     private String description;
@@ -37,7 +36,7 @@ public class Team {
     private LocalDate createdAt;
 
     @ManyToMany(mappedBy = "teams")
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Board> boards;

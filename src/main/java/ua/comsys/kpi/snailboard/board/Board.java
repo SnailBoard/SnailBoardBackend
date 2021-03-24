@@ -30,7 +30,7 @@ public class Board {
     private String description;
 
     @Column
-    private String name;
+    private String code;
 
     @Column
     private LocalDate createdAt;
