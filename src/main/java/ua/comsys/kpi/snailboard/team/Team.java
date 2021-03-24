@@ -27,7 +27,7 @@ public class Team {
     private UUID id;
 
     @Column
-    private String name;
+    private String naming;
 
     @Column
     private String description;

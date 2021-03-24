@@ -30,8 +30,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstName")
+    private String firstName;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -57,7 +57,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ticket_id"))
     private List<Ticket> tickets = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

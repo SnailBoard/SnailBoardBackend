@@ -26,7 +26,7 @@ public class Ticket {
     private UUID id;
 
     @Column
-    private String text;
+    private String description;
 
     @Column
     private Integer number;

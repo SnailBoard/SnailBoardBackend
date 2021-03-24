@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userEntity) {
-        Role userRole = roleRepository.findByName(Roles.ROLE_USER)
+        Role userRole = roleRepository.findByCode(Roles.ROLE_USER)
                 .orElseThrow(IllegalStateException::new);
         userEntity.setRoles(Collections.singletonList(userRole));
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));

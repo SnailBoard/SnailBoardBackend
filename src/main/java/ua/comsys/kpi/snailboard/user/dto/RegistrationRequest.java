@@ -9,5 +9,5 @@ public class RegistrationRequest {
     String email;
     String password;
     String username;
-    String name;
+    String firstName;
 }

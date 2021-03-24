@@ -25,7 +25,7 @@ public class Statistic {
     private UUID id;
 
     @Column
-    private Integer time;
+    private Integer ts;
 
     @Column
     private Integer tasks;

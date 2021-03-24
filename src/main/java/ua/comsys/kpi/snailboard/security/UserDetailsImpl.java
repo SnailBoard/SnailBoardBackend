@@ -20,7 +20,7 @@ public class UserDetailsImpl implements UserDetails {
         c.email = userEntity.getEmail();
         c.password = userEntity.getPassword();
         c.grantedAuthorities = userEntity.getRoles().stream().
-                map((var role) -> new SimpleGrantedAuthority(role.getName().name())).
+                map((var role) -> new SimpleGrantedAuthority(role.getCode().name())).
                 collect(Collectors.toList());
         return c;
     }

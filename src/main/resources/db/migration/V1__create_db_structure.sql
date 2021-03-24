@@ -1,130 +1,28 @@
-create table IF NOT EXISTS  board
-(
-    id          binary(255) not null,
-    created_at  date,
-    description varchar(255),
-    name        varchar(255),
-    team_id     binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  columns
-(
-    id         binary(255) not null,
-    created_at date,
-    name       varchar(255),
-    board_id   binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  notification
-(
-    id      binary(255) not null,
-    src_url varchar(255),
-    text    varchar(255),
-    user_id binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  roles
-(
-    id   binary(255) not null,
-    name varchar(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  statistic
-(
-    id       binary(255) not null,
-    tasks    integer,
-    time     integer,
-    board_id binary(255),
-    user_id  binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  team
-(
-    id          binary(255) not null,
-    created_at  date,
-    description varchar(255),
-    name        varchar(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  ticket
-(
-    id        binary(255) not null,
-    number    integer,
-    text      varchar(255),
-    column_id binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  ticket_history
-(
-    id                 binary(255) not null,
-    change_date        date,
-    text_before_change varchar(255),
-    ticket_id          binary(255),
-    primary key (id)
-);
-
-create table IF NOT EXISTS  user_role
-(
-    user_id binary(255) not null,
-    role_id binary(255) not null
-);
-
-create table IF NOT EXISTS  user_team
-(
-    user_id binary(255) not null,
-    team_id binary(255) not null
-);
-
-create table IF NOT EXISTS  user_ticket
-(
-    user_id   binary(255) not null,
-    ticket_id binary(255) not null
-);
-
-create table IF NOT EXISTS  usr
-(
-    id       binary(255) not null,
-    email    varchar(255),
-    name     varchar(255),
-    password varchar(255),
-    username varchar(255),
-    primary key (id)
-);
-
-alter table usr
-    add constraint UK_useremail unique (email);
-alter table usr
-    add constraint UK_username unique (username);
-alter table board
-    add constraint FK_board2teams foreign key (team_id) references team (id);
-alter table columns
-    add constraint FK_columns2boards foreign key (board_id) references board (id);
-alter table notification
-    add constraint FK_notification2users foreign key (user_id) references usr (id);
-alter table statistic
-    add constraint FK_statistic2boards foreign key (board_id) references board (id);
-alter table statistic
-    add constraint FK_statistic2users foreign key (user_id) references usr (id);
-alter table ticket
-    add constraint FK_tickets2columns foreign key (column_id) references columns (id);
-alter table ticket_history
-    add constraint FK_tickets2history2tickets foreign key (ticket_id) references ticket (id);
-alter table user_role
-    add constraint FK_user2roles2roles foreign key (role_id) references roles (id);
-alter table user_role
-    add constraint FK_user2roles2users foreign key (user_id) references usr (id);
-alter table user_team
-    add constraint FK_user2team2teams foreign key (team_id) references team (id);
-alter table user_team
-    add constraint FK_user2team2users foreign key (user_id) references usr (id);
-alter table user_ticket
-    add constraint FK_user2ticket2tickets foreign key (ticket_id) references ticket (id);
-alter table user_ticket
-    add constraint FK_user2ticket2users foreign key (user_id) references usr (id);
+create table board (id uuid not null, created_at date, description varchar(255), code varchar(255), team_id uuid, primary key (id));
+create table columns (id uuid not null, created_at date, code varchar(255), board_id uuid, primary key (id));
+create table notification (id uuid not null, src_url varchar(255), message varchar(255), user_id uuid, primary key (id));
+create table roles (id uuid not null, code varchar(255), primary key (id));
+create table statistic (id uuid not null, tasks int4, ts int4, board_id uuid, user_id uuid, primary key (id));
+create table team (id uuid not null, created_at date, description varchar(255), naming varchar(255), primary key (id));
+create table ticket (id uuid not null, number int4, description varchar(255), column_id uuid, primary key (id));
+create table ticket_history (id uuid not null, change_date date, text_before_change varchar(255), ticket_id uuid, primary key (id));
+create table user_role (user_id uuid not null, role_id uuid not null);
+create table user_team (user_id uuid not null, team_id uuid not null);
+create table user_ticket (user_id uuid not null, ticket_id uuid not null);
+create table usr (id uuid not null, email varchar(255), first_name varchar(255), password varchar(255), username varchar(255), primary key (id));
+alter table if exists roles add constraint UK_ofx66keruapi6vyqpv6f2or37 unique (code);
+alter table if exists usr add constraint UK_g9l96r670qkidthshajdtxrqf unique (email);
+alter table if exists usr add constraint UK_dfui7gxngrgwn9ewee3ogtgym unique (username);
+alter table if exists board add constraint FKhnthbc04iar1brn0b6jki0evy foreign key (team_id) references team;
+alter table if exists columns add constraint FK8lptoar4xq74ku1uy3x07s7c9 foreign key (board_id) references board;
+alter table if exists notification add constraint FKevidnapp9upsd44aq70k5kcxi foreign key (user_id) references usr;
+alter table if exists statistic add constraint FK31f2kf2mhy2t0btk533kwdsxi foreign key (board_id) references board;
+alter table if exists statistic add constraint FK3fk4hj4hlc9ut33lb4pt47r4p foreign key (user_id) references usr;
+alter table if exists ticket add constraint FKbmvlastpf91k7w31tjjyrx0hg foreign key (column_id) references columns;
+alter table if exists ticket_history add constraint FKn172ccrihn09prjnpoyxabcgw foreign key (ticket_id) references ticket;
+alter table if exists user_role add constraint FKt7e7djp752sqn6w22i6ocqy6q foreign key (role_id) references roles;
+alter table if exists user_role add constraint FKfpm8swft53ulq2hl11yplpr5 foreign key (user_id) references usr;
+alter table if exists user_team add constraint FK6d6agqknw564xtsa91d3259wu foreign key (team_id) references team;
+alter table if exists user_team add constraint FK7w15pc3v22k3dmdf5kyeb9wht foreign key (user_id) references usr;
+alter table if exists user_ticket add constraint FKkedld378rqa1aqbiilpltsc1x foreign key (ticket_id) references ticket;
+alter table if exists user_ticket add constraint FKpgtvr2qk9a3xlnxpkktd36yus foreign key (user_id) references usr;

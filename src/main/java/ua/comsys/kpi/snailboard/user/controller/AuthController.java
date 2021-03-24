@@ -26,7 +26,7 @@ public class AuthController {
         User user = new User();
         user.setPassword(registrationRequest.getPassword());
         user.setEmail(registrationRequest.getEmail());
-        user.setName(registrationRequest.getName());
+        user.setFirstName(registrationRequest.getFirstName());
         user.setUsername(registrationRequest.getUsername());
         user.setNotifications(new ArrayList<>());
         user.setStatistics(new ArrayList<>());

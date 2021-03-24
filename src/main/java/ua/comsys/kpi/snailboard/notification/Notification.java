@@ -24,7 +24,7 @@ public class Notification {
     private UUID id;
 
     @Column
-    private String text;
+    private String message;
 
     @Column
     private String srcUrl;

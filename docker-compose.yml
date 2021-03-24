@@ -2,12 +2,11 @@ version: "3.3"
 
 services:
   db:
-    image: mysql:5.7
+    image: postgres
     restart: always
     ports:
-    - 3306:3306
+    - 5432:5432
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: snailboard
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      POSTGRES_DB: snailboard
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
