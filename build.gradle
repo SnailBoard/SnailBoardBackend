@@ -33,9 +33,10 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
-test {
-    useJUnitPlatform()
-}
+// ci build should be done without bounding to external sources, this tests are bounded to db
+//test {
+//    useJUnitPlatform()
+//}
 
 flyway {
     url = 'jdbc:postgresql://localhost:5432/snailboard'
