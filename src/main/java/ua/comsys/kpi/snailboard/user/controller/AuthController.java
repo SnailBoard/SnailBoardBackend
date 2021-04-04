@@ -1,45 +1,41 @@
 package ua.comsys.kpi.snailboard.user.controller;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
+import ua.comsys.kpi.snailboard.token.refresh.facade.RefreshTokenFacade;
 import ua.comsys.kpi.snailboard.user.dto.AuthRequest;
 import ua.comsys.kpi.snailboard.user.dto.AuthResponse;
+import ua.comsys.kpi.snailboard.user.dto.RefreshTokenRequest;
 import ua.comsys.kpi.snailboard.user.dto.RegistrationRequest;
-import ua.comsys.kpi.snailboard.user.model.User;
-import ua.comsys.kpi.snailboard.user.service.UserService;
-
-import java.util.ArrayList;
+import ua.comsys.kpi.snailboard.user.facade.AuthFacade;
 
 @RestController
 public class AuthController {
 
     @Autowired
-    UserService userService;
+    AuthFacade authFacade;
+
     @Autowired
-    JWTProvider jwtProvider;
+    RefreshTokenFacade refreshTokenFacade;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody RegistrationRequest registrationRequest) {
-        User user = new User();
-        user.setPassword(registrationRequest.getPassword());
-        user.setEmail(registrationRequest.getEmail());
-        user.setFirstName(registrationRequest.getFirstName());
-        user.setUsername(registrationRequest.getUsername());
-        user.setNotifications(new ArrayList<>());
-        user.setStatistics(new ArrayList<>());
-        user.setTeams(new ArrayList<>());
-        user.setTickets(new ArrayList<>());
-        userService.createUser(user);
-        return "OK";
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerUser(@RequestBody RegistrationRequest registrationRequest) {
+        authFacade.createUser(registrationRequest);
     }
 
     @PostMapping("/auth")
-    public AuthResponse auth(@RequestBody AuthRequest request) {
-        User user = userService.findByEmailAndPassword(request.getEmail(), request.getPassword()).get();
-        String token = jwtProvider.generateToken(user.getEmail());
-        return new AuthResponse(token);
+    public AuthResponse auth(@RequestBody AuthRequest authRequest) {
+        return authFacade.authUser(authRequest);
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponse refresh(@RequestBody RefreshTokenRequest refreshToken) {
+        return refreshTokenFacade.refreshToken(refreshToken.getRefreshToken());
     }
 }

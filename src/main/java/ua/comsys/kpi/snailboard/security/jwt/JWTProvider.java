@@ -5,26 +5,45 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 @Component
 @Log
 public class JWTProvider {
+    @Value("${jwt.refreshSecret}")
+    private String jwtRefreshSecret;
     @Value("${jwt.secret}")
     private String jwtSecret;
     @Value("${jwt.tokenExpiration}")
-    private Integer tokenExpiration;
+    private Long jwtExpirationInMs;
+    @Value("${jwt.refreshTokenExpiration}")
+    private Long refreshExpirationDateInMs;
 
-    public String generateToken(String login) {
-        Date date = Date.from(LocalDate.now().plusDays(tokenExpiration).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public String generateAccessToken(String login) {
         return Jwts.builder()
                 .setSubject(login)
-                .setExpiration(date)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
+    public String generateRefreshToken(String login) {
+        return Jwts.builder()
+                .setSubject(login)
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationDateInMs))
+                .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
+                .compact();
+    }
+
+    public String generateRefreshToken(Date expiration, String login) {
+        return Jwts.builder()
+                .setSubject(login)
+                .setExpiration(expiration)
+                .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
+                .compact();
+    }
+
+
 
     public boolean validateToken(String token) {
         try {
@@ -47,5 +66,15 @@ public class JWTProvider {
     public String getLoginFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
+    }
+
+    public String getLoginFromRefreshToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
+        return claims.getSubject();
+    }
+
+    public Date getRefreshExpirationDate(String token) {
+        Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
+        return claims.getExpiration();
     }
 }
