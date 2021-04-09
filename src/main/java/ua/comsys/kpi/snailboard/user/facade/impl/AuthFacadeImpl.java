@@ -1,8 +1,11 @@
 package ua.comsys.kpi.snailboard.user.facade.impl;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
 import ua.comsys.kpi.snailboard.token.refresh.service.RefreshTokenService;
 import ua.comsys.kpi.snailboard.user.dto.AuthRequest;
@@ -13,23 +16,20 @@ import ua.comsys.kpi.snailboard.user.facade.AuthFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
 
-import java.util.ArrayList;
-
 @Component
 public class AuthFacadeImpl implements AuthFacade {
 
-    private final UserService userService;
-    private final JWTProvider jwtProvider;
-    private final RefreshTokenService refreshTokenService;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public AuthFacadeImpl(UserService userService, JWTProvider jwtProvider, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.jwtProvider = jwtProvider;
-        this.refreshTokenService = refreshTokenService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private JWTProvider jwtProvider;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void createUser(RegistrationRequest registrationRequest) {

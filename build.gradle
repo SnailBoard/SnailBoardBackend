@@ -31,12 +31,15 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.0-M1'
 }
 
-// ci build should be done without bounding to external sources, this tests are bounded to db
-//test {
-//    useJUnitPlatform()
-//}
+test {
+    useJUnitPlatform()
+}
 
 flyway {
     url = 'jdbc:postgresql://localhost:5432/snailboard'

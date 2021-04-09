@@ -1,34 +1,43 @@
 package ua.comsys.kpi.snailboard.user.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import ua.comsys.kpi.snailboard.role.model.Role;
-import ua.comsys.kpi.snailboard.role.dao.RoleRepository;
-import ua.comsys.kpi.snailboard.role.model.Roles;
-import ua.comsys.kpi.snailboard.user.dao.UserRepository;
-import ua.comsys.kpi.snailboard.user.model.User;
-import ua.comsys.kpi.snailboard.user.service.UserService;
-
 import java.util.Collections;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import ua.comsys.kpi.snailboard.role.dao.RoleRepository;
+import ua.comsys.kpi.snailboard.role.model.Role;
+import ua.comsys.kpi.snailboard.role.model.Roles;
+import ua.comsys.kpi.snailboard.user.dao.UserRepository;
+import ua.comsys.kpi.snailboard.user.exception.UserExistsException;
+import ua.comsys.kpi.snailboard.user.model.User;
+import ua.comsys.kpi.snailboard.user.service.UserService;
+
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private static final String USER_ALREADY_EXISTS = "User {} already exists";
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User createUser(User userEntity) {
+        if (userRepository.findByEmail(userEntity.getEmail()).isPresent()) {
+            LOG.warn(USER_ALREADY_EXISTS, userEntity.getEmail());
+            throw new UserExistsException();
+        }
         Role userRole = roleRepository.findByCode(Roles.ROLE_USER)
                 .orElseThrow(IllegalStateException::new);
         userEntity.setRoles(Collections.singletonList(userRole));
@@ -50,6 +59,4 @@ public class UserServiceImpl implements UserService {
         }
         return Optional.empty();
     }
-
-
 }
