@@ -1,18 +1,18 @@
 package ua.comsys.kpi.snailboard.security.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 class JWTProviderTest {
@@ -25,6 +25,8 @@ class JWTProviderTest {
     private static final Long ACCESS_TOKEN_EXPIRATION_VALUE = 60000L;
     private static final String REFRESH_TOKEN_EXPIRATION = "refreshExpirationDateInMs";
     private static final Long REFRESH_TOKEN_EXPIRATION_VALUE = 2592000000L;
+    private static final Long ACCESS_TOKEN_EXPIRATION_ZERO_VALUE = 0L;
+    private static final String TOKEN_EXPIRED_STRING = "Token expired";
 
 
     @InjectMocks
@@ -70,5 +72,16 @@ class JWTProviderTest {
         String result = testingInstance.getLoginFromRefreshToken(token);
 
         assertThat(result, is(EMAIL));
+    }
+
+    @Test
+    void shouldThrowExceptionWithTokenExpiredMessageWhenExpiredToken() {
+        ReflectionTestUtils.setField(testingInstance, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_EXPIRATION_ZERO_VALUE);
+
+        String token = testingInstance.generateAccessToken(EMAIL);
+
+        TokenValidationException tokenValidationException =
+                assertThrows(TokenValidationException.class, () -> testingInstance.validateToken(token));
+        assertEquals(TOKEN_EXPIRED_STRING, tokenValidationException.getMessage());
     }
 }

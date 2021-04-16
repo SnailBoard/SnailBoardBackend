@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
 
 import java.util.Date;
 
@@ -43,24 +44,26 @@ public class JWTProvider {
                 .compact();
     }
 
-
-
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            return true;
         } catch (ExpiredJwtException expEx) {
             log.severe("Token expired");
+            throw new TokenValidationException("Token expired");
         } catch (UnsupportedJwtException unsEx) {
             log.severe("Unsupported jwt");
+            throw new TokenValidationException("Unsupported jwt");
         } catch (MalformedJwtException mjEx) {
             log.severe("Malformed jwt");
+            throw new TokenValidationException("Malformed jwt");
         } catch (SignatureException sEx) {
             log.severe("Invalid signature");
+            throw new TokenValidationException("Invalid signature");
         } catch (Exception e) {
-            log.severe("invalid token");
+            log.severe("Invalid token");
+            throw new TokenValidationException("Invalid token");
         }
-        return false;
+        return true;
     }
 
     public String getLoginFromToken(String token) {
