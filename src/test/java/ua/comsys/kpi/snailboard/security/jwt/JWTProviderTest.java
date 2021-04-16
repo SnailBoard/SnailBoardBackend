@@ -25,6 +25,8 @@ class JWTProviderTest {
     private static final Long ACCESS_TOKEN_EXPIRATION_VALUE = 60000L;
     private static final String REFRESH_TOKEN_EXPIRATION = "refreshExpirationDateInMs";
     private static final Long REFRESH_TOKEN_EXPIRATION_VALUE = 2592000000L;
+    private static final Long ACCESS_TOKEN_EXPIRATION_ZERO_VALUE = 0L;
+    private static final String TOKEN_EXPIRED_STRING = "Token expired";
 
 
     @InjectMocks
@@ -74,12 +76,12 @@ class JWTProviderTest {
 
     @Test
     void shouldThrowExceptionWithTokenExpiredMessageWhenExpiredToken() {
-        ReflectionTestUtils.setField(testingInstance, ACCESS_TOKEN_EXPIRATION, 0L);
+        ReflectionTestUtils.setField(testingInstance, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_EXPIRATION_ZERO_VALUE);
 
         String token = testingInstance.generateAccessToken(EMAIL);
 
         TokenValidationException tokenValidationException =
                 assertThrows(TokenValidationException.class, () -> testingInstance.validateToken(token));
-        assertEquals("Token expired", tokenValidationException.getMessage());
+        assertEquals(TOKEN_EXPIRED_STRING, tokenValidationException.getMessage());
     }
 }
