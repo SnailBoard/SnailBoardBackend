@@ -1,21 +1,22 @@
 package ua.comsys.kpi.snailboard.user.service.impl;
 
-import java.util.Collections;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import ua.comsys.kpi.snailboard.role.dao.RoleRepository;
 import ua.comsys.kpi.snailboard.role.model.Role;
 import ua.comsys.kpi.snailboard.role.model.Roles;
 import ua.comsys.kpi.snailboard.user.dao.UserRepository;
+import ua.comsys.kpi.snailboard.user.dto.UserInfoDto;
 import ua.comsys.kpi.snailboard.user.exception.UserExistsException;
+import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
+
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -59,4 +60,12 @@ public class UserServiceImpl implements UserService {
         }
         return Optional.empty();
     }
+
+    @Override
+    public UserInfoDto getUserInfoByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserInfoDto::fromEntity)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
 }

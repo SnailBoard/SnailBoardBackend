@@ -3,7 +3,10 @@ package ua.comsys.kpi.snailboard.security.jwt;
 import io.jsonwebtoken.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import ua.comsys.kpi.snailboard.security.UserDetailsImpl;
 import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
 
 import java.util.Date;
@@ -79,5 +82,11 @@ public class JWTProvider {
     public Date getRefreshExpirationDate(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
         return claims.getExpiration();
+    }
+
+    public static String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var currentUser = (UserDetailsImpl) authentication.getPrincipal();
+        return currentUser.getUsername();
     }
 }
