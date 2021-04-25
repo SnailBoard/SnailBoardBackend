@@ -1,14 +1,6 @@
 package ua.comsys.kpi.snailboard.security.jwt;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,9 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-
-import lombok.extern.java.Log;
+import ua.comsys.kpi.snailboard.dto.ErrorResponseDto;
 import ua.comsys.kpi.snailboard.security.UserDetailsServiceImpl;
+import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
+import ua.comsys.kpi.snailboard.utils.ObjectUtils;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -38,18 +39,27 @@ public class JWTFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
-        if (token != null && jwtProvider.validateToken(token)) {
-            String userLogin = jwtProvider.getLoginFromToken(token);
-            try {
+        try {
+            if (token != null && jwtProvider.validateToken(token)) {
+                String userLogin = jwtProvider.getLoginFromToken(token);
+
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userLogin);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (UsernameNotFoundException exception) {
-                HttpServletResponse httpResponse =(HttpServletResponse) servletResponse;
-                httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return;
             }
+        } catch (UsernameNotFoundException exception) {
+            HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        } catch (TokenValidationException tokenValidationException) {
+            HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            httpResponse
+                    .getWriter()
+                    .write(ObjectUtils
+                            .convertObjectToJson(new ErrorResponseDto(tokenValidationException.getMessage())));
+            return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
