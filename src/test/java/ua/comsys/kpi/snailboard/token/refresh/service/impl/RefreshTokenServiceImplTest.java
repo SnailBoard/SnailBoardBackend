@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 class RefreshTokenServiceImplTest {
     private static final String EMAIL = "email@email.com";
-    private static final String REFRESH_TOKEN = "refreshToken";
+    private static final String REFRESH_TOKEN = "refreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshToken";
 
 
     @Mock
@@ -65,7 +65,7 @@ class RefreshTokenServiceImplTest {
         RefreshToken token = mock(RefreshToken.class);
         when(tokenRepository.findByEmail(EMAIL)).thenReturn(Optional.of(token));
         when(token.getRefreshingToken()).thenReturn(REFRESH_TOKEN);
-        when(passwordEncoder.matches(REFRESH_TOKEN, REFRESH_TOKEN)).thenReturn(true);
+        when(passwordEncoder.matches(REFRESH_TOKEN.substring(REFRESH_TOKEN.length() - 20), REFRESH_TOKEN)).thenReturn(true);
 
         boolean result = testingInstance.validateToken(EMAIL, REFRESH_TOKEN);
 

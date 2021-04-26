@@ -25,15 +25,14 @@ public class RefreshTokenFacadeImpl implements RefreshTokenFacade {
 
     @Override
     public AuthResponse refreshToken(String refreshToken) {
-        jwtProvider.validateToken(refreshToken);
+        jwtProvider.validateToken(refreshToken, true);
         String email = jwtProvider.getLoginFromRefreshToken(refreshToken);
         if (!refreshTokenService.validateToken(email, refreshToken)) {
             LOG.warn("Invalid refresh token");
             throw new TokenNotValidException();
         }
         String accessToken = jwtProvider.generateAccessToken(email);
-        Date expiration = jwtProvider.getRefreshExpirationDate(refreshToken);
-        String refreshTkn = jwtProvider.generateRefreshToken(expiration, email);
+        String refreshTkn = jwtProvider.generateRefreshToken(email);
         refreshTokenService.createOrUpdateRefreshToken(email, refreshTkn);
         return new AuthResponse(accessToken, refreshTkn);
     }

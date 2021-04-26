@@ -51,7 +51,7 @@ public class AuthFacadeImpl implements AuthFacade {
                 .orElseThrow(UserNotFoundException::new);
         String accessToken = jwtProvider.generateAccessToken(user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
-        refreshTokenService.createOrUpdateRefreshToken(user.getEmail(), passwordEncoder.encode(refreshToken));
+        refreshTokenService.createOrUpdateRefreshToken(user.getEmail(), refreshToken);
         return new AuthResponse(accessToken, refreshToken);
     }
 }

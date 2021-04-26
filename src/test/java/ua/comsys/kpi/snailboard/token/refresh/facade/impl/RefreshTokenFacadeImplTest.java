@@ -23,9 +23,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 class RefreshTokenFacadeImplTest {
     private static final String EMAIL = "email@email.com";
-    private static final String REFRESH_TOKEN = "refreshToken";
+    private static final String REFRESH_TOKEN = "refreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshToken";
     private static final String ACCESS_TOKEN = "accessToken";
-    private static final Date DATE = new Date(123L);
 
     @Mock
     private JWTProvider jwtProvider;
@@ -46,8 +45,7 @@ class RefreshTokenFacadeImplTest {
         when(jwtProvider.getLoginFromRefreshToken(REFRESH_TOKEN)).thenReturn(EMAIL);
         when(refreshTokenService.validateToken(EMAIL, REFRESH_TOKEN)).thenReturn(true);
         when(jwtProvider.generateAccessToken(EMAIL)).thenReturn(ACCESS_TOKEN);
-        when(jwtProvider.getRefreshExpirationDate(REFRESH_TOKEN)).thenReturn(DATE);
-        when(jwtProvider.generateRefreshToken(DATE, EMAIL)).thenReturn(REFRESH_TOKEN);
+        when(jwtProvider.generateRefreshToken(EMAIL)).thenReturn(REFRESH_TOKEN);
 
         AuthResponse result = testingInstance.refreshToken(REFRESH_TOKEN);
 

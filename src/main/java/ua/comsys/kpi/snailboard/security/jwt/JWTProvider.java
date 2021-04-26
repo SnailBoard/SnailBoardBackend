@@ -39,17 +39,10 @@ public class JWTProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(Date expiration, String login) {
-        return Jwts.builder()
-                .setSubject(login)
-                .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
-                .compact();
-    }
-
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, boolean isRefresh) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            String secret = isRefresh ? jwtRefreshSecret : jwtSecret;
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
         } catch (ExpiredJwtException expEx) {
             log.severe("Token expired");
             throw new TokenValidationException("Token expired");
@@ -69,6 +62,10 @@ public class JWTProvider {
         return true;
     }
 
+    public boolean validateToken(String token) {
+        return validateToken(token, false);
+    }
+
     public String getLoginFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
@@ -77,11 +74,6 @@ public class JWTProvider {
     public String getLoginFromRefreshToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
-    }
-
-    public Date getRefreshExpirationDate(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
-        return claims.getExpiration();
     }
 
     public static String getCurrentUserEmail() {
