@@ -1,9 +1,10 @@
-package ua.comsys.kpi.snailboard.team;
+package ua.comsys.kpi.snailboard.team.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.board.Board;
 import ua.comsys.kpi.snailboard.user.model.User;
@@ -33,9 +34,13 @@ public class Team {
     private String description;
 
     @Column
+    @CreationTimestamp
     private LocalDate createdAt;
 
-    @ManyToMany(mappedBy = "teams")
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_team",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)

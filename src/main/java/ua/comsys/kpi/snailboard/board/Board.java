@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.column.Columns;
-import ua.comsys.kpi.snailboard.team.Team;
+import ua.comsys.kpi.snailboard.team.model.Team;
 
 import javax.persistence.*;
 import java.time.LocalDate;
