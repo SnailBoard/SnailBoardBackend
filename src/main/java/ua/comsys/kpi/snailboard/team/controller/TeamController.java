@@ -16,7 +16,7 @@ public class TeamController {
 
     @Secured("ROLE_USER")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/createInitial")
+    @PostMapping
     public void initialCreate(@RequestBody CreateTeamsRequest request) {
         teamFacade.initialCreate(request.getName(), request.getDescription());
     }

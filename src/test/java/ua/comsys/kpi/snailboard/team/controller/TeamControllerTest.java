@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 class TeamControllerTest {
 
-    private static final String URL_CREATE_INITIAL_TEAM = "/team/createInitial";
+    private static final String URL_CREATE_INITIAL_TEAM = "/team";
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
