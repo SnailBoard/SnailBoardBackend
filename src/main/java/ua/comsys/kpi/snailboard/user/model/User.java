@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.notification.Notification;
 import ua.comsys.kpi.snailboard.role.model.Role;
 import ua.comsys.kpi.snailboard.statistic.Statistic;
-import ua.comsys.kpi.snailboard.team.Team;
+import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
 
 import javax.persistence.*;

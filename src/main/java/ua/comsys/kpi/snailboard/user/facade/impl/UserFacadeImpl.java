@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
 import ua.comsys.kpi.snailboard.user.dto.UserInfoDto;
+import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
@@ -24,6 +25,11 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public UserInfoDto getCurrentUserInfo() {
         return userService.getUserInfoByEmail(jwtProvider.getCurrentUserEmail());
+    }
+
+    @Override
+    public User getCurrentUserModel() {
+        return userService.findByEmail(jwtProvider.getCurrentUserEmail()).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
