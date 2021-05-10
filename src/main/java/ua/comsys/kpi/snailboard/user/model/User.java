@@ -1,6 +1,7 @@
 package ua.comsys.kpi.snailboard.user.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "usr")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {

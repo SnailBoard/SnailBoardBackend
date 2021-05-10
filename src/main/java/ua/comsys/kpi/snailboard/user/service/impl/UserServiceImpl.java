@@ -3,6 +3,7 @@ package ua.comsys.kpi.snailboard.user.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.comsys.kpi.snailboard.role.dao.RoleRepository;
@@ -16,6 +17,7 @@ import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -68,4 +70,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Override
+    public List<User> getUsersByUsername(String username) {
+        return userRepository.findByUsernameContaining(username);
+    }
+
+    @Override
+    public List<User> getUsersByUsernameWithLimit(String username, Integer limit) {
+        return userRepository.findAllByUsernameContaining(username, PageRequest.of(0, limit));
+    }
 }

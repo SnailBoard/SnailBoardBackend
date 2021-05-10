@@ -1,19 +1,21 @@
 package ua.comsys.kpi.snailboard.user.controller;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.comsys.kpi.snailboard.user.dto.UserInfoDto;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 
-//todo: TESTING CLASS TO BE REMOVED
+import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 public class UserController {
 
-    private final UserFacade userFacade;
+    @Autowired
+    private UserFacade userFacade;
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/admin/get")
@@ -27,5 +29,14 @@ public class UserController {
         return userFacade.getCurrentUserInfo();
     }
 
-
+    @Secured("ROLE_USER")
+    @GetMapping("/usersInfo/{username}")
+    public List<UserInfoDto> getUsersByUsername(@PathVariable String username,
+                                                @RequestParam(required = false) Integer limit) {
+        if (limit != null) {
+            return userFacade.getUsersByUsername(username, limit);
+        } else {
+            return userFacade.getUsersByUsername(username);
+        }
+    }
 }
