@@ -76,7 +76,7 @@ public class JWTProvider {
         return claims.getSubject();
     }
 
-    public static String getCurrentUserEmail() {
+    public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var currentUser = (UserDetailsImpl) authentication.getPrincipal();
         return currentUser.getUsername();
