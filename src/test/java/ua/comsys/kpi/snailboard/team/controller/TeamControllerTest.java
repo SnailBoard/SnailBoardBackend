@@ -14,12 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ua.comsys.kpi.snailboard.team.dto.CreateTeamsRequest;
 import ua.comsys.kpi.snailboard.team.facade.TeamFacade;
-import ua.comsys.kpi.snailboard.user.controller.UserController;
-import ua.comsys.kpi.snailboard.user.dto.RegistrationRequest;
-import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TeamControllerTest {
 
     private static final String URL_CREATE_INITIAL_TEAM = "/team";
+    private static final String URL_GET_TEAMS = "/team";
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
@@ -57,6 +53,14 @@ class TeamControllerTest {
                 .andExpect(status().isCreated());
 
         verify(teamFacade).initialCreate(NAME, DESCRIPTION);
+    }
+
+    @Test
+    @WithMockUser(username = "test", roles = {"ROLE_USER"})
+    void shouldGetCurrentUser() throws Exception {
+        mockMvc.perform(get(URL_GET_TEAMS))
+                .andExpect(status().isOk());
+        verify(teamFacade).getTeamsForCurrentUser();
     }
 
     private static String asJsonString(final Object obj) {

@@ -7,10 +7,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import ua.comsys.kpi.snailboard.team.dto.GetTeamResponse;
+import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -19,6 +26,7 @@ class TeamFacadeImplTest {
 
     private static final String TEST_DESC = "testDesc";
     private static final String TEST_NAME = "testName";
+    private static final int USERS_COUNT = 2;
 
     @Mock
     private UserFacade userService;
@@ -44,4 +52,19 @@ class TeamFacadeImplTest {
         verify(teamService).create(any());
     }
 
+    @Test
+    void shouldMapTeamToResponse() {
+        User user = new User();
+        List<Team> teams = new ArrayList<>();
+        List<User> users = List.of(user, user);
+        teams.add(Team.builder().naming(TEST_NAME).description(TEST_DESC).users(users).build());
+        when(userService.getCurrentUserModel()).thenReturn(user);
+        when(teamService.getTeamsByUser(user)).thenReturn(teams);
+
+        List<GetTeamResponse> result = testingInstance.getTeamsForCurrentUser();
+
+        verify(teamService).getTeamsByUser(user);
+        assertThat(result.get(0).getMemberCount(), is(USERS_COUNT));
+        assertThat(result.get(0).getName(), is(TEST_NAME));
+    }
 }
