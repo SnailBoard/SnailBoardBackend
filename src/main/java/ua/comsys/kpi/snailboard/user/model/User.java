@@ -53,11 +53,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "team_id"))
     private List<Team> teams;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_ticket",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "ticket_id"))
-    private List<Ticket> tickets = new ArrayList<>();
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Ticket> assignedTickets;
+
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Ticket> reportedTickets;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

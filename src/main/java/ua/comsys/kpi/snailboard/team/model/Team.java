@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import ua.comsys.kpi.snailboard.board.Board;
 import ua.comsys.kpi.snailboard.user.model.User;
 
@@ -28,7 +29,7 @@ public class Team {
     private UUID id;
 
     @Column
-    private String naming;
+    private String name;
 
     @Column
     private String description;
@@ -36,6 +37,10 @@ public class Team {
     @Column
     @CreationTimestamp
     private LocalDate createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDate updatedAt;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_team",
