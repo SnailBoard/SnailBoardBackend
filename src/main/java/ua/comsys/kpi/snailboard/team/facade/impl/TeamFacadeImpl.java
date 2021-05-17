@@ -25,7 +25,7 @@ public class TeamFacadeImpl implements TeamFacade {
     @Override
     public void initialCreate(String name, String description) {
         User currentUser = userFacade.getCurrentUserModel();
-        Team team = Team.builder().naming(name).description(description).
+        Team team = Team.builder().name(name).description(description).
                 users(Collections.singletonList(currentUser)).build();
         teamService.create(team);
     }
@@ -36,7 +36,7 @@ public class TeamFacadeImpl implements TeamFacade {
         List<Team> teams = teamService.getTeamsByUser(currentUser);
         return teams.stream().map(team -> GetTeamResponse.builder()
                 .id(team.getId())
-                .name(team.getNaming())
+                .name(team.getName())
                 .description(team.getDescription())
                 .memberCount(team.getUsers().size())
                 .build()).collect(Collectors.toList());

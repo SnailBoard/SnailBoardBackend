@@ -57,7 +57,7 @@ class TeamFacadeImplTest {
         User user = new User();
         List<Team> teams = new ArrayList<>();
         List<User> users = List.of(user, user);
-        teams.add(Team.builder().naming(TEST_NAME).description(TEST_DESC).users(users).build());
+        teams.add(Team.builder().name(TEST_NAME).description(TEST_DESC).users(users).build());
         when(userService.getCurrentUserModel()).thenReturn(user);
         when(teamService.getTeamsByUser(user)).thenReturn(teams);
 

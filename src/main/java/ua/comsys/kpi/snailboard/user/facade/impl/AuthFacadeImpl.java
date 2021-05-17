@@ -41,7 +41,8 @@ public class AuthFacadeImpl implements AuthFacade {
         user.setNotifications(new ArrayList<>());
         user.setStatistics(new ArrayList<>());
         user.setTeams(new ArrayList<>());
-        user.setTickets(new ArrayList<>());
+        user.setAssignedTickets(new ArrayList<>());
+        user.setReportedTickets(new ArrayList<>());
         userService.createUser(user);
     }
 
