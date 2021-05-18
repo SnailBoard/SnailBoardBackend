@@ -33,6 +33,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     public List<Board> getBoardsByTeam(Team team) {
+        validateUserBelongsToTeam(team);
         return boardRepository.findAllByTeam(team);
     }
 

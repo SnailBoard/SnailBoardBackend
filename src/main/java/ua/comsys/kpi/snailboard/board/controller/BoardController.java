@@ -26,7 +26,6 @@ public class BoardController {
     }
 
     @Secured("ROLE_USER")
-    @ResponseStatus(HttpStatus.CREATED)
     @GetMapping("byTeam/{teamId}")
     public GetBoardResponse initialCreate(@PathVariable String teamId) {
         return boardFacade.getBoardsByTeam(teamId);
