@@ -18,4 +18,6 @@ public interface UserService {
     List<User> getUsersByUsername(String username);
 
     List<User> getUsersByUsernameWithLimit(String username, Integer limit);
+
+    List<User> getAllUsers();
 }

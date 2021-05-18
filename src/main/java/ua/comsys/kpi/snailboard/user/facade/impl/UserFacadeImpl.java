@@ -43,4 +43,9 @@ public class UserFacadeImpl implements UserFacade {
         List<User> users = userService.getUsersByUsernameWithLimit(username, limit);
         return users.stream().map(UserInfoDto::fromEntity).collect(Collectors.toList());
     }
+
+    @Override
+    public List<UserInfoDto> getAllUsersInfo() {
+        return userService.getAllUsers().stream().map(UserInfoDto::fromEntity).collect(Collectors.toList());
+    }
 }

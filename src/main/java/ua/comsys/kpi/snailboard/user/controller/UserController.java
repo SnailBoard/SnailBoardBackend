@@ -39,4 +39,10 @@ public class UserController {
             return userFacade.getUsersByUsername(username);
         }
     }
+
+    @Secured("ROLE_USER")
+    @GetMapping("/usersInfo")
+    public List<UserInfoDto> getAllUsers() {
+        return userFacade.getAllUsersInfo();
+    }
 }

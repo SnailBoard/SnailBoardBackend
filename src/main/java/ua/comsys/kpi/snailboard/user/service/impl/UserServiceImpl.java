@@ -79,4 +79,9 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersByUsernameWithLimit(String username, Integer limit) {
         return userRepository.findAllByUsernameContaining(username, PageRequest.of(0, limit));
     }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }
