@@ -1,23 +1,22 @@
 package ua.comsys.kpi.snailboard.team.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import ua.comsys.kpi.snailboard.board.Board;
+import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "team")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,5 +48,5 @@ public class Team {
     private List<User> users;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    private List<Board> boards;
+    private Set<Board> boards;
 }
