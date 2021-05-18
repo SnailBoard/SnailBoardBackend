@@ -1,9 +1,6 @@
-package ua.comsys.kpi.snailboard.board;
+package ua.comsys.kpi.snailboard.board.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,7 +14,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "board")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -45,7 +43,7 @@ public class Board {
     @UpdateTimestamp
     private LocalDate updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 

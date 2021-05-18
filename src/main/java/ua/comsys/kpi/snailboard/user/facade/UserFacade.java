@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface UserFacade {
     UserInfoDto getCurrentUserInfo();
+
     User getCurrentUserModel();
+
     List<UserInfoDto> getUsersByUsername(String username);
+
     List<UserInfoDto> getUsersByUsername(String username, Integer limit);
 }

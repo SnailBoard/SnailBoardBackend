@@ -1,9 +1,6 @@
 package ua.comsys.kpi.snailboard.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.notification.Notification;
 import ua.comsys.kpi.snailboard.role.model.Role;
@@ -12,13 +9,14 @@ import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "usr")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,11 +45,11 @@ public class User {
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Notification> notifications;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_team",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    private List<Team> teams;
+    private Set<Team> teams;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> assignedTickets;

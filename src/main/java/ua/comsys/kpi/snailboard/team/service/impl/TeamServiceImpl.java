@@ -3,12 +3,14 @@ package ua.comsys.kpi.snailboard.team.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.comsys.kpi.snailboard.team.dao.TeamRepository;
+import ua.comsys.kpi.snailboard.team.exception.TeamNotFoundException;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.model.User;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -24,5 +26,10 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<Team> getTeamsByUser(User user) {
         return teamRepository.findAllByUsersIn(Collections.singletonList(user));
+    }
+
+    @Override
+    public Team getTeamById(UUID uuid) {
+        return teamRepository.findById(uuid).orElseThrow(TeamNotFoundException::new);
     }
 }

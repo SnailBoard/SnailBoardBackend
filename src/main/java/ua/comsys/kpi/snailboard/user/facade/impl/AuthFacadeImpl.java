@@ -1,11 +1,8 @@
 package ua.comsys.kpi.snailboard.user.facade.impl;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
 import ua.comsys.kpi.snailboard.token.refresh.service.RefreshTokenService;
 import ua.comsys.kpi.snailboard.user.dto.AuthRequest;
@@ -15,6 +12,9 @@ import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 import ua.comsys.kpi.snailboard.user.facade.AuthFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class AuthFacadeImpl implements AuthFacade {
@@ -40,7 +40,7 @@ public class AuthFacadeImpl implements AuthFacade {
         user.setUsername(registrationRequest.getUsername());
         user.setNotifications(new ArrayList<>());
         user.setStatistics(new ArrayList<>());
-        user.setTeams(new ArrayList<>());
+        user.setTeams(new HashSet<>());
         user.setAssignedTickets(new ArrayList<>());
         user.setReportedTickets(new ArrayList<>());
         userService.createUser(user);
