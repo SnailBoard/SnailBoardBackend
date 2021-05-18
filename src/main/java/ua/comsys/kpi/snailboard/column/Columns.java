@@ -1,11 +1,8 @@
 package ua.comsys.kpi.snailboard.column;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import ua.comsys.kpi.snailboard.board.Board;
+import ua.comsys.kpi.snailboard.board.model.Board;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,7 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "columns")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

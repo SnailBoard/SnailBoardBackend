@@ -1,9 +1,6 @@
 package ua.comsys.kpi.snailboard.notification;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import ua.comsys.kpi.snailboard.user.model.User;
 
@@ -15,7 +12,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class Notification {
     @Id
     @GeneratedValue(generator = "UUID")

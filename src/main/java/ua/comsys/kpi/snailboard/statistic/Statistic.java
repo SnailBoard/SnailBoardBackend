@@ -1,11 +1,8 @@
 package ua.comsys.kpi.snailboard.statistic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import ua.comsys.kpi.snailboard.board.Board;
+import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
@@ -16,7 +13,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Statistic {
     @Id
     @GeneratedValue(generator = "UUID")
