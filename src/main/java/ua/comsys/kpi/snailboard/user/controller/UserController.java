@@ -31,7 +31,7 @@ public class UserController {
 
     @Secured("ROLE_USER")
     @GetMapping("/usersInfo/{username}")
-    public List<UserInfoDto> getUsersByUsername(@PathVariable String username,
+    public List<UserInfoDto> getUsersByUsername(@PathVariable(required = false) String username,
                                                 @RequestParam(required = false) Integer limit) {
         if (limit != null) {
             return userFacade.getUsersByUsername(username, limit);
