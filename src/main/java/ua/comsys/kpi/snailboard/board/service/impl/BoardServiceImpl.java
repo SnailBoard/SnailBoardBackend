@@ -11,6 +11,8 @@ import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 
+import java.util.List;
+
 @Service
 public class BoardServiceImpl implements BoardService {
 
@@ -20,12 +22,19 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserFacade userFacade;
 
+
+
     @Override
     @Transactional
     public void createInitial(String name, String description, Team team) {
         validateUserBelongsToTeam(team);
         Board board = Board.builder().name(name).description(description).team(team).build();
         boardRepository.save(board);
+    }
+
+    public List<Board> getBoardsByTeam(Team team) {
+        validateUserBelongsToTeam(team);
+        return boardRepository.findAllByTeam(team);
     }
 
     private void validateUserBelongsToTeam(Team team) {
