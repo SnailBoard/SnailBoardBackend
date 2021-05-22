@@ -37,6 +37,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     testImplementation group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.0-M1'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.2'
+    compile('org.springframework.boot:spring-boot-starter-mail')
 }
 
 test {

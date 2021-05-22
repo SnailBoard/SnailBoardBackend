@@ -19,7 +19,7 @@ public class TeamInvite {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(unique = true, name = "invited_email")
+    @Column(name = "invited_email")
     private String invitedEmail;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
