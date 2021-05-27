@@ -36,16 +36,32 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User createUser(User userEntity) {
-        if (userRepository.findByEmail(userEntity.getEmail()).isPresent()) {
-            LOG.warn(USER_ALREADY_EXISTS, userEntity.getEmail());
-            throw new UserExistsException();
-        }
+    public User createUser(User user) {
+        validateUserIsNew(user);
         Role userRole = roleRepository.findByCode(Roles.ROLE_USER)
                 .orElseThrow(IllegalStateException::new);
-        userEntity.setRoles(Collections.singletonList(userRole));
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        return userRepository.save(userEntity);
+        user.setRoles(Collections.singletonList(userRole));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public void validateUserIsNew(User user) {
+        validateEmailIsNew(user.getEmail());
+        validateUsernameIsNew(user.getUsername());
+    }
+
+    private void validateEmailIsNew(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            LOG.warn(USER_ALREADY_EXISTS, email);
+            throw new UserExistsException();
+        }
+    }
+
+    private void validateUsernameIsNew(String username) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            LOG.warn(USER_ALREADY_EXISTS, username);
+            throw new UserExistsException();
+        }
     }
 
     @Override
@@ -56,12 +72,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmailAndPassword(String email, String password) {
         Optional<User> user = findByEmail(email);
-        if (user.isPresent() &&
-                passwordEncoder.matches(password, user.get().getPassword())) {
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
             return user;
         }
         return Optional.empty();
     }
+
 
     @Override
     public UserInfoDto getUserInfoByEmail(String email) {

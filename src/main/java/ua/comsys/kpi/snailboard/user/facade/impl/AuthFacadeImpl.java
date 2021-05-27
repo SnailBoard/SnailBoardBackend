@@ -33,16 +33,12 @@ public class AuthFacadeImpl implements AuthFacade {
 
     @Override
     public void createUser(RegistrationRequest registrationRequest) {
-        User user = new User();
-        user.setPassword(registrationRequest.getPassword());
-        user.setEmail(registrationRequest.getEmail());
-        user.setFirstName(registrationRequest.getFirstName());
-        user.setUsername(registrationRequest.getUsername());
-        user.setNotifications(new ArrayList<>());
-        user.setStatistics(new ArrayList<>());
-        user.setTeams(new HashSet<>());
-        user.setAssignedTickets(new ArrayList<>());
-        user.setReportedTickets(new ArrayList<>());
+        User user = User.builder()
+                .password(registrationRequest.getPassword())
+                .email(registrationRequest.getEmail())
+                .firstName(registrationRequest.getFirstName())
+                .username(registrationRequest.getUsername())
+                .build();
         userService.createUser(user);
     }
 

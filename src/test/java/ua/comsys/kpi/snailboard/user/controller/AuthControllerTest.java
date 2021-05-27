@@ -74,7 +74,7 @@ class AuthControllerTest {
         mockMvc.perform(post(URL_REGISTER)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
-                .andExpect(status().isForbidden())
+                .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserExistsException));
     }
 
