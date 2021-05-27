@@ -2,6 +2,7 @@ package ua.comsys.kpi.snailboard.token.refresh.service.impl;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ua.comsys.kpi.snailboard.token.refresh.dao.RefreshTokenRepository;
+import ua.comsys.kpi.snailboard.token.refresh.exception.TokenNotValidException;
 import ua.comsys.kpi.snailboard.token.refresh.model.RefreshToken;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -67,9 +69,7 @@ class RefreshTokenServiceImplTest {
         when(token.getRefreshingToken()).thenReturn(REFRESH_TOKEN);
         when(passwordEncoder.matches(REFRESH_TOKEN.substring(REFRESH_TOKEN.length() - 20), REFRESH_TOKEN)).thenReturn(true);
 
-        boolean result = testingInstance.validateToken(EMAIL, REFRESH_TOKEN);
-
-        assertTrue(result);
+        testingInstance.validateTokenMatchWithUser(EMAIL, REFRESH_TOKEN);
     }
 
     @Test
@@ -79,8 +79,6 @@ class RefreshTokenServiceImplTest {
         when(token.getRefreshingToken()).thenReturn(REFRESH_TOKEN);
         when(passwordEncoder.matches(REFRESH_TOKEN, REFRESH_TOKEN)).thenReturn(false);
 
-        boolean result = testingInstance.validateToken(EMAIL, REFRESH_TOKEN);
-
-        assertFalse(result);
+        Assertions.assertThrows(TokenNotValidException.class, () -> testingInstance.validateTokenMatchWithUser(EMAIL, REFRESH_TOKEN));
     }
 }

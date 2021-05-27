@@ -1,6 +1,7 @@
 package ua.comsys.kpi.snailboard.token.refresh.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "refresh_tokens")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshToken {

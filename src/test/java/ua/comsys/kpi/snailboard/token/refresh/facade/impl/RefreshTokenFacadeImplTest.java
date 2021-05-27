@@ -43,7 +43,6 @@ class RefreshTokenFacadeImplTest {
     @Test
     void shouldRefreshToken() {
         when(jwtProvider.getLoginFromRefreshToken(REFRESH_TOKEN)).thenReturn(EMAIL);
-        when(refreshTokenService.validateToken(EMAIL, REFRESH_TOKEN)).thenReturn(true);
         when(jwtProvider.generateAccessToken(EMAIL)).thenReturn(ACCESS_TOKEN);
         when(jwtProvider.generateRefreshToken(EMAIL)).thenReturn(REFRESH_TOKEN);
 
@@ -52,13 +51,5 @@ class RefreshTokenFacadeImplTest {
         verify(refreshTokenService).createOrUpdateRefreshToken(EMAIL, REFRESH_TOKEN);
         assertThat(result.getRefreshToken(), is(REFRESH_TOKEN));
         assertThat(result.getAccessToken(), is(ACCESS_TOKEN));
-    }
-
-    @Test
-    void shouldNotRefreshUnValidToken() {
-        when(jwtProvider.getLoginFromRefreshToken(REFRESH_TOKEN)).thenReturn(EMAIL);
-        when(refreshTokenService.validateToken(EMAIL, REFRESH_TOKEN)).thenReturn(false);
-
-        Assertions.assertThrows(RuntimeException.class, () -> testingInstance.refreshToken(REFRESH_TOKEN));
     }
 }
