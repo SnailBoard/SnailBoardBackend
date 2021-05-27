@@ -44,7 +44,7 @@ public class TeamFacadeImpl implements TeamFacade {
         String teamName = teamService.getTeamNameById(teamId);
         emailService.sendEmail(
                 userEmail,
-                StringUtils.prepareTeamInvitationalEmail(inviteLink, teamName),
+                inviteLink,
                 "Snailboard team invitation"
                 );
     }
