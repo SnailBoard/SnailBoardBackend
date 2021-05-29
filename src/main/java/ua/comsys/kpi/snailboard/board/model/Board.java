@@ -50,4 +50,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<Columns> columns;
+
+    @Column(unique = true)
+    private int boardPosition;
 }

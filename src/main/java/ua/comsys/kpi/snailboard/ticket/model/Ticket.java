@@ -68,4 +68,7 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "column_id")
     private Columns column;
+
+    @Column(unique = true)
+    private int columnPosition;
 }
