@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 import ua.comsys.kpi.snailboard.token.refresh.service.RefreshTokenService;
 import ua.comsys.kpi.snailboard.user.dto.AuthRequest;
 import ua.comsys.kpi.snailboard.user.dto.AuthResponse;
@@ -46,9 +48,9 @@ public class AuthFacadeImpl implements AuthFacade {
     public AuthResponse authUser(AuthRequest request) {
         User user = userService.findByEmailAndPassword(request.getEmail(), request.getPassword())
                 .orElseThrow(UserNotFoundException::new);
-        String accessToken = jwtProvider.generateAccessToken(user.getEmail());
-        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        AccessTokenDTO accessToken = jwtProvider.generateAccessToken(user.getEmail());
+        RefreshTokenDTO refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
         refreshTokenService.createOrUpdateRefreshToken(user.getEmail(), refreshToken);
-        return new AuthResponse(accessToken, refreshToken);
+        return new AuthResponse(accessToken.getToken(), refreshToken.getToken());
     }
 }

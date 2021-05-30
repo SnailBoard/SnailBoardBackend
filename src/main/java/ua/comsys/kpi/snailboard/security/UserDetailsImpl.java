@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
-
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> grantedAuthorities;

@@ -22,8 +22,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private UserFacade userFacade;
 
-
-
     @Override
     @Transactional
     public void createInitial(String name, String description, Team team) {

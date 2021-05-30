@@ -11,6 +11,8 @@ import org.springframework.web.filter.GenericFilterBean;
 import ua.comsys.kpi.snailboard.dto.ErrorResponseDto;
 import ua.comsys.kpi.snailboard.security.UserDetailsServiceImpl;
 import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
+import ua.comsys.kpi.snailboard.token.dto.Token;
 import ua.comsys.kpi.snailboard.utils.ObjectUtils;
 
 import javax.servlet.FilterChain;
@@ -38,7 +40,7 @@ public class JWTFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String token = getTokenFromRequest((HttpServletRequest) servletRequest);
+        AccessTokenDTO token = getTokenFromRequest((HttpServletRequest) servletRequest);
         try {
             if (token != null && jwtProvider.validateToken(token)) {
                 String userLogin = jwtProvider.getLoginFromToken(token);
@@ -55,19 +57,18 @@ public class JWTFilter extends GenericFilterBean {
         } catch (TokenValidationException tokenValidationException) {
             HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            httpResponse
-                    .getWriter()
-                    .write(ObjectUtils
-                            .convertObjectToJson(new ErrorResponseDto(tokenValidationException.getMessage())));
+            httpResponse.getWriter().write(
+                    ObjectUtils.convertObjectToJson(new ErrorResponseDto(tokenValidationException.getMessage()))
+            );
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
+    private AccessTokenDTO getTokenFromRequest(HttpServletRequest request) {
         String bearer = request.getHeader(AUTHORIZATION);
         if (hasText(bearer) && bearer.startsWith(BEARER)) {
-            return bearer.substring(7);
+            return new AccessTokenDTO(bearer.substring(7), jwtProvider.getJwtAccessSecret());
         }
         return null;
     }
