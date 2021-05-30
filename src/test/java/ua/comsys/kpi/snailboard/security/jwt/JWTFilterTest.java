@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ua.comsys.kpi.snailboard.role.model.Role;
 import ua.comsys.kpi.snailboard.role.model.Roles;
 import ua.comsys.kpi.snailboard.security.UserDetailsServiceImpl;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
 import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.when;
 class JWTFilterTest {
     public static final String AUTHORIZATION = "Authorization";
     public static final String TOKEN = "Bearer test";
-    public static final String PARSE_TOKEN = "test";
+    public static final AccessTokenDTO PARSE_TOKEN = new AccessTokenDTO("test", "test");
     public static final String EMAIL = "example@example.com";
 
     @Mock

@@ -35,9 +35,10 @@ public class BoardFacadeImpl implements BoardFacade {
         validateIdType(teamId);
         Team team = teamService.getTeamById(UUID.fromString(teamId));
         List<Board> boards = boardService.getBoardsByTeam(team);
-        List<BoardInfo> boardInfos = boards.stream().map(board -> new BoardInfo(board.getName(), board.getDescription()))
+        List<BoardInfo> boardsInfo = boards.stream()
+                .map(board -> new BoardInfo(board.getName(), board.getDescription()))
                 .collect(Collectors.toList());
-        return new GetBoardResponse(boardInfos, team.getUsers().size());
+        return new GetBoardResponse(boardsInfo, team.getUsers().size());
     }
 
     private void validateIdType(String teamId) {

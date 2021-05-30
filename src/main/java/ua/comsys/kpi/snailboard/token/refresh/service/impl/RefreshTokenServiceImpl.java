@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
 import ua.comsys.kpi.snailboard.token.refresh.dao.RefreshTokenRepository;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 import ua.comsys.kpi.snailboard.token.refresh.exception.TokenNotValidException;
 import ua.comsys.kpi.snailboard.token.refresh.facade.impl.RefreshTokenFacadeImpl;
 import ua.comsys.kpi.snailboard.token.refresh.model.RefreshToken;
@@ -25,9 +26,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void createOrUpdateRefreshToken(String email, String refreshToken) {
+    public void createOrUpdateRefreshToken(String email, RefreshTokenDTO refreshToken) {
         Optional<RefreshToken> token = tokenRepository.findByEmail(email);
-        token.ifPresentOrElse(tkn -> updateToken(tkn, refreshToken), () -> createToken(email, refreshToken));
+        token.ifPresentOrElse(tkn -> updateToken(tkn, refreshToken.getToken()),
+                () -> createToken(email, refreshToken.getToken()));
     }
 
     public void createToken(String email, String refreshToken) {

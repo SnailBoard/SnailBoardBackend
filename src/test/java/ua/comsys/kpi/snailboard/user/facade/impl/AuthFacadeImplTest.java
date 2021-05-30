@@ -13,6 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ua.comsys.kpi.snailboard.security.jwt.JWTProvider;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 import ua.comsys.kpi.snailboard.token.refresh.service.RefreshTokenService;
 import ua.comsys.kpi.snailboard.user.dto.AuthRequest;
 import ua.comsys.kpi.snailboard.user.dto.AuthResponse;
@@ -31,8 +33,8 @@ class AuthFacadeImplTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
-    private static final String ACCESS_TOKEN = "accessToken";
-    private static final String REFRESH_TOKEN = "refreshToken";
+    private static final AccessTokenDTO ACCESS_TOKEN = new AccessTokenDTO("accessToken", "test");
+    private static final RefreshTokenDTO REFRESH_TOKEN = new RefreshTokenDTO("refreshToken", "test");
 
     @Mock
     private UserService userService;
@@ -63,13 +65,13 @@ class AuthFacadeImplTest {
         when(user.getEmail()).thenReturn(EMAIL);
         when(jwtProvider.generateAccessToken(EMAIL)).thenReturn(ACCESS_TOKEN);
         when(jwtProvider.generateRefreshToken(EMAIL)).thenReturn(REFRESH_TOKEN);
-        when(passwordEncoder.encode(REFRESH_TOKEN)).thenReturn(REFRESH_TOKEN);
+        when(passwordEncoder.encode(REFRESH_TOKEN.getToken())).thenReturn(REFRESH_TOKEN.getToken());
 
         AuthResponse result = testingInstance.authUser(request);
 
         verify(refreshTokenService).createOrUpdateRefreshToken(EMAIL, REFRESH_TOKEN);
-        assertThat(result.getAccessToken(), is(ACCESS_TOKEN));
-        assertThat(result.getRefreshToken(), is(REFRESH_TOKEN));
+        assertThat(result.getAccessToken(), is(ACCESS_TOKEN.getToken()));
+        assertThat(result.getRefreshToken(), is(REFRESH_TOKEN.getToken()));
     }
 
     @Test

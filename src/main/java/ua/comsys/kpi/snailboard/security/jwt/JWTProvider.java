@@ -8,6 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ua.comsys.kpi.snailboard.security.UserDetailsImpl;
 import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
+import ua.comsys.kpi.snailboard.token.dto.Token;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 
 import java.util.Date;
 
@@ -17,62 +20,59 @@ public class JWTProvider {
     @Value("${jwt.refreshSecret}")
     private String jwtRefreshSecret;
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtAccessSecret;
     @Value("${jwt.tokenExpiration}")
     private Long jwtExpirationInMs;
     @Value("${jwt.refreshTokenExpiration}")
     private Long refreshExpirationDateInMs;
 
-    public String generateAccessToken(String login) {
-        return Jwts.builder()
+    public AccessTokenDTO generateAccessToken(String login) {
+        String token = Jwts.builder()
                 .setSubject(login)
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
                 .compact();
+        return new AccessTokenDTO(token, getJwtAccessSecret());
     }
 
-    public String generateRefreshToken(String login) {
-        return Jwts.builder()
+    public RefreshTokenDTO generateRefreshToken(String login) {
+        String token = Jwts.builder()
                 .setSubject(login)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationDateInMs))
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
                 .compact();
+        return new RefreshTokenDTO(token, getJwtRefreshSecret());
     }
 
-    public boolean validateToken(String token, boolean isRefresh) {
+    public boolean validateToken(Token token) {
         try {
-            String secret = isRefresh ? jwtRefreshSecret : jwtSecret;
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-        } catch (ExpiredJwtException expEx) {
+            Jwts.parser().setSigningKey(token.getSecret()).parseClaimsJws(token.getToken());
+            return true;
+        } catch (Exception exception) {
+            throwFormattedException(exception);
+            return false;
+        }
+    }
+
+    private void throwFormattedException(Exception ex) {
+        if (ex instanceof ExpiredJwtException) {
             log.severe("Token expired");
             throw new TokenValidationException("Token expired");
-        } catch (UnsupportedJwtException unsEx) {
+        } else if (ex instanceof UnsupportedJwtException) {
             log.severe("Unsupported jwt");
             throw new TokenValidationException("Unsupported jwt");
-        } catch (MalformedJwtException mjEx) {
+        } else if (ex instanceof MalformedJwtException) {
             log.severe("Malformed jwt");
             throw new TokenValidationException("Malformed jwt");
-        } catch (SignatureException sEx) {
+        } else if (ex instanceof SignatureException) {
             log.severe("Invalid signature");
             throw new TokenValidationException("Invalid signature");
-        } catch (Exception e) {
-            log.severe("Invalid token");
-            throw new TokenValidationException("Invalid token");
         }
-        return true;
     }
 
-    public boolean validateToken(String token) {
-        return validateToken(token, false);
-    }
 
-    public String getLoginFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return claims.getSubject();
-    }
-
-    public String getLoginFromRefreshToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody();
+    public String getLoginFromToken(Token token) {
+        Claims claims = Jwts.parser().setSigningKey(token.getSecret()).parseClaimsJws(token.getToken()).getBody();
         return claims.getSubject();
     }
 
@@ -80,5 +80,13 @@ public class JWTProvider {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var currentUser = (UserDetailsImpl) authentication.getPrincipal();
         return currentUser.getUsername();
+    }
+
+    public String getJwtRefreshSecret() {
+        return jwtRefreshSecret;
+    }
+
+    public String getJwtAccessSecret() {
+        return jwtAccessSecret;
     }
 }
