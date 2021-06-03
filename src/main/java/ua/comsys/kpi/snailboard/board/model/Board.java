@@ -4,13 +4,13 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import ua.comsys.kpi.snailboard.column.Columns;
+import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.team.model.Team;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -48,9 +48,6 @@ public class Board {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    private List<Columns> columns;
-
-    @Column(unique = true)
-    private int boardPosition;
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    private Set<Columns> columns;
 }
