@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardInfo {
+public class BoardPreviewInfo {
     String name;
     String description;
-
 }

@@ -8,6 +8,7 @@ import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
+import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ public class UserFacadeImpl implements UserFacade {
     @Autowired
     private JWTProvider jwtProvider;
 
+    @Autowired
+    Converter<User, UserInfoDto> userUserInfoDtoConverter;
+
     @Override
     public UserInfoDto getCurrentUserInfo() {
         return userService.getUserInfoByEmail(jwtProvider.getCurrentUserEmail());
@@ -35,12 +39,12 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public List<UserInfoDto> getUsersByUsername(String username) {
         List<User> users = userService.getUsersByUsername(username);
-        return users.stream().map(UserInfoDto::fromEntity).collect(Collectors.toList());
+        return users.stream().map(userUserInfoDtoConverter::convert).collect(Collectors.toList());
     }
 
     @Override
     public List<UserInfoDto> getUsersByUsername(String username, Integer limit) {
         List<User> users = userService.getUsersByUsernameWithLimit(username, limit);
-        return users.stream().map(UserInfoDto::fromEntity).collect(Collectors.toList());
+        return users.stream().map(userUserInfoDtoConverter::convert).collect(Collectors.toList());
     }
 }

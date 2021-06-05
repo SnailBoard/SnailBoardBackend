@@ -2,7 +2,8 @@ package ua.comsys.kpi.snailboard.board.facade.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.comsys.kpi.snailboard.board.dto.BoardInfo;
+import ua.comsys.kpi.snailboard.board.dto.BoardPreviewInfo;
+import ua.comsys.kpi.snailboard.board.dto.GetBoardByIdResponse;
 import ua.comsys.kpi.snailboard.board.dto.GetBoardResponse;
 import ua.comsys.kpi.snailboard.board.facade.BoardFacade;
 import ua.comsys.kpi.snailboard.board.model.Board;
@@ -10,6 +11,7 @@ import ua.comsys.kpi.snailboard.board.service.BoardService;
 import ua.comsys.kpi.snailboard.team.exception.InvalidTeamIdFormat;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
+import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +26,9 @@ public class BoardFacadeImpl implements BoardFacade {
     @Autowired
     BoardService boardService;
 
+    @Autowired
+    Converter<Board, GetBoardByIdResponse> getBoardByIdResponseConverter;
+
     @Override
     public void createInitial(String name, String description, String teamId) {
         validateIdType(teamId);
@@ -35,10 +40,17 @@ public class BoardFacadeImpl implements BoardFacade {
         validateIdType(teamId);
         Team team = teamService.getTeamById(UUID.fromString(teamId));
         List<Board> boards = boardService.getBoardsByTeam(team);
-        List<BoardInfo> boardsInfo = boards.stream()
-                .map(board -> new BoardInfo(board.getName(), board.getDescription()))
+        List<BoardPreviewInfo> boardsInfo = boards.stream()
+                .map(board -> new BoardPreviewInfo(board.getName(), board.getDescription()))
                 .collect(Collectors.toList());
         return new GetBoardResponse(boardsInfo, team.getUsers().size());
+    }
+
+    @Override
+    public GetBoardByIdResponse getBoardById(String boardId) {
+        validateIdType(boardId);
+        Board board = boardService.getBoardById(UUID.fromString(boardId));
+        return getBoardByIdResponseConverter.convert(board);
     }
 
     private void validateIdType(String teamId) {

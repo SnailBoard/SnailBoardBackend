@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import ua.comsys.kpi.snailboard.board.dto.GetBoardByIdResponse;
 import ua.comsys.kpi.snailboard.board.dto.GetBoardResponse;
 import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.board.service.BoardService;
@@ -15,6 +16,7 @@ import ua.comsys.kpi.snailboard.team.exception.InvalidTeamIdFormat;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.model.User;
+import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ class BoardFacadeImplTest {
 
     @Mock
     private TeamService teamService;
+
+    @Mock
+    Converter<Board, GetBoardByIdResponse> getBoardByIdResponseConverter;
 
     @InjectMocks
     private final BoardFacadeImpl testingInstance = new BoardFacadeImpl();
@@ -83,5 +88,15 @@ class BoardFacadeImplTest {
         assertThat(result.getBoards().get(0).getName(), is(NAME_1));
         assertThat(result.getBoards().get(1).getDescription(), is(DESC_2));
         assertThat(result.getMemberCount(), is(3));
+    }
+
+    @Test
+    void shouldConvertBoardToResponse() {
+        Board board = Board.builder().name(NAME_1).description(DESC_1).build();
+        when(boardService.getBoardById(UUID_1)).thenReturn(board);
+
+        testingInstance.getBoardById(UUID_1_STRING);
+
+        verify(getBoardByIdResponseConverter).convert(board);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ua.comsys.kpi.snailboard.board.dto.CreateBoardRequest;
+import ua.comsys.kpi.snailboard.board.dto.GetBoardByIdResponse;
 import ua.comsys.kpi.snailboard.board.dto.GetBoardResponse;
 import ua.comsys.kpi.snailboard.board.facade.BoardFacade;
 
@@ -26,5 +27,11 @@ public class BoardController {
     @GetMapping("byTeam/{teamId}")
     public GetBoardResponse getBoardByTeam(@PathVariable String teamId) {
         return boardFacade.getBoardsByTeam(teamId);
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping("{boardId}")
+    public GetBoardByIdResponse getBoardById(@PathVariable String boardId) {
+        return boardFacade.getBoardById(boardId);
     }
 }

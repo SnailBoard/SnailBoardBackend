@@ -54,11 +54,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "team_id"))
     private Set<Team> teams;
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> assignedTickets;
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Ticket> assignedTickets;
 
-    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> reportedTickets;
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Ticket> reportedTickets;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

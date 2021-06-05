@@ -15,6 +15,7 @@ import ua.comsys.kpi.snailboard.user.exception.UserExistsException;
 import ua.comsys.kpi.snailboard.user.exception.UserNotFoundException;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
+import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    Converter<User, UserInfoDto> userUserInfoDtoConverter;
 
     @Override
     public User createUser(User user) {
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoDto getUserInfoByEmail(String email) {
         return userRepository.findByEmail(email)
-                .map(UserInfoDto::fromEntity)
+                .map(userUserInfoDtoConverter::convert)
                 .orElseThrow(UserNotFoundException::new);
     }
 

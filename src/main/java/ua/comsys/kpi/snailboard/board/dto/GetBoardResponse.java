@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetBoardResponse {
-    List<BoardInfo> boards;
+    List<BoardPreviewInfo> boards;
     Integer memberCount;
 }
