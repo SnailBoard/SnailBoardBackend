@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.comsys.kpi.snailboard.board.dao.BoardRepository;
+import ua.comsys.kpi.snailboard.board.exception.BoardNotFoundException;
 import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.board.service.BoardService;
 import ua.comsys.kpi.snailboard.team.exception.UserNotBelongsToTeam;
@@ -12,6 +13,7 @@ import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -21,8 +23,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     private UserFacade userFacade;
-
-
 
     @Override
     @Transactional
@@ -35,6 +35,13 @@ public class BoardServiceImpl implements BoardService {
     public List<Board> getBoardsByTeam(Team team) {
         validateUserBelongsToTeam(team);
         return boardRepository.findAllByTeam(team);
+    }
+
+    @Override
+    public Board getBoardById(UUID id) {
+        Board board = boardRepository.findById(id).orElseThrow(BoardNotFoundException::new);
+        validateUserBelongsToTeam(board.getTeam());
+        return board;
     }
 
     private void validateUserBelongsToTeam(Team team) {

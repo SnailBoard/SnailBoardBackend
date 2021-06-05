@@ -4,11 +4,11 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import ua.comsys.kpi.snailboard.column.Columns;
+import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,11 +38,11 @@ public class Ticket {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
     private List<TicketHistory> ticketHistories;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "reporter_id")
     private User reporter;
 
@@ -58,13 +58,16 @@ public class Ticket {
 
     @Column
     @CreationTimestamp
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column
     @UpdateTimestamp
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "column_id")
     private Columns column;
+
+    @Column(unique = true)
+    private int columnPosition;
 }

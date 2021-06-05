@@ -2,6 +2,7 @@ package ua.comsys.kpi.snailboard.token.refresh.service.impl;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ua.comsys.kpi.snailboard.token.refresh.dao.RefreshTokenRepository;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
+import ua.comsys.kpi.snailboard.token.refresh.exception.TokenNotValidException;
 import ua.comsys.kpi.snailboard.token.refresh.model.RefreshToken;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,6 +28,7 @@ import static org.mockito.Mockito.when;
 class RefreshTokenServiceImplTest {
     private static final String EMAIL = "email@email.com";
     private static final String REFRESH_TOKEN = "refreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshTokenrefreshToken";
+    private static final String SECRET = "test";
 
 
     @Mock
@@ -44,8 +48,8 @@ class RefreshTokenServiceImplTest {
     @Test
     void shouldCreateRefreshTokenIfNotExists() {
         when(tokenRepository.findByEmail(EMAIL)).thenReturn(Optional.empty());
-
-        testingInstance.createOrUpdateRefreshToken(EMAIL, REFRESH_TOKEN);
+        RefreshTokenDTO token = new RefreshTokenDTO(REFRESH_TOKEN, SECRET);
+        testingInstance.createOrUpdateRefreshToken(EMAIL, token);
 
         verify(tokenRepository).save(any());
     }
@@ -54,8 +58,9 @@ class RefreshTokenServiceImplTest {
     void shouldUpdateRefreshTokenIfExists() {
         RefreshToken token = mock(RefreshToken.class);
         when(tokenRepository.findByEmail(EMAIL)).thenReturn(Optional.of(token));
+        RefreshTokenDTO refreshTokenDTO = new RefreshTokenDTO(REFRESH_TOKEN, SECRET);
 
-        testingInstance.createOrUpdateRefreshToken(EMAIL, REFRESH_TOKEN);
+        testingInstance.createOrUpdateRefreshToken(EMAIL, refreshTokenDTO);
 
         verify(tokenRepository).save(token);
     }
@@ -67,9 +72,7 @@ class RefreshTokenServiceImplTest {
         when(token.getRefreshingToken()).thenReturn(REFRESH_TOKEN);
         when(passwordEncoder.matches(REFRESH_TOKEN.substring(REFRESH_TOKEN.length() - 20), REFRESH_TOKEN)).thenReturn(true);
 
-        boolean result = testingInstance.validateToken(EMAIL, REFRESH_TOKEN);
-
-        assertTrue(result);
+        testingInstance.validateTokenMatchWithUser(EMAIL, REFRESH_TOKEN);
     }
 
     @Test
@@ -79,8 +82,6 @@ class RefreshTokenServiceImplTest {
         when(token.getRefreshingToken()).thenReturn(REFRESH_TOKEN);
         when(passwordEncoder.matches(REFRESH_TOKEN, REFRESH_TOKEN)).thenReturn(false);
 
-        boolean result = testingInstance.validateToken(EMAIL, REFRESH_TOKEN);
-
-        assertFalse(result);
+        Assertions.assertThrows(TokenNotValidException.class, () -> testingInstance.validateTokenMatchWithUser(EMAIL, REFRESH_TOKEN));
     }
 }

@@ -40,19 +40,4 @@ class UserFacadeImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
-
-    @Test
-    void shouldMapUserToUserInfo() {
-        List<User> users = new ArrayList<>();
-        users.add(User.builder().username(USERNAME_TEST1).build());
-        users.add(User.builder().username(USERNAME_TEST2).build());
-        when(userService.getUsersByUsername(USERNAME)).thenReturn(users);
-
-
-        List<UserInfoDto> result = testingInstance.getUsersByUsername(USERNAME);
-
-        assertThat(result.size(), is(LIST_SIZE_WO_LIMIT));
-        assertThat(result.get(0).getUsername(), is(USERNAME_TEST1));
-        assertThat(result.get(1).getUsername(), is(USERNAME_TEST2));
-    }
 }

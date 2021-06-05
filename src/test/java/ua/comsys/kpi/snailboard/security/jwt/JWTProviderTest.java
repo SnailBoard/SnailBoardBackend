@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import ua.comsys.kpi.snailboard.security.jwt.exception.TokenValidationException;
+import ua.comsys.kpi.snailboard.token.access.dto.AccessTokenDTO;
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(MockitoJUnitRunner.class)
 class JWTProviderTest {
     private static final String EMAIL = "example@example.com";
-    private static final String JWT_SECRET = "jwtSecret";
+    private static final String JWT_SECRET = "jwtAccessSecret";
     private static final String SECRET_VALUE = "secret";
     private static final String REFRESH_SECRET = "jwtRefreshSecret";
     private static final String REFRESH_SECRET_VALUE = "refreshSecret";
@@ -42,15 +44,15 @@ class JWTProviderTest {
 
     @Test
     void shouldCreateAccessToken() {
-        String result = testingInstance.generateAccessToken(EMAIL);
+        AccessTokenDTO result = testingInstance.generateAccessToken(EMAIL);
 
-        Claims claims = Jwts.parser().setSigningKey(SECRET_VALUE).parseClaimsJws(result).getBody();
+        Claims claims = Jwts.parser().setSigningKey(SECRET_VALUE).parseClaimsJws(result.getToken()).getBody();
         assertThat(claims.getSubject(), is(EMAIL));
     }
 
     @Test
     void shouldValidateToken() {
-        String token = testingInstance.generateAccessToken(EMAIL);
+        AccessTokenDTO token = testingInstance.generateAccessToken(EMAIL);
         boolean result = testingInstance.validateToken(token);
 
         assertTrue(result);
@@ -58,7 +60,7 @@ class JWTProviderTest {
 
     @Test
     void shouldGetEmailFromAccessToken() {
-        String token = testingInstance.generateAccessToken(EMAIL);
+        AccessTokenDTO token = testingInstance.generateAccessToken(EMAIL);
 
         String result = testingInstance.getLoginFromToken(token);
 
@@ -67,9 +69,9 @@ class JWTProviderTest {
 
     @Test
     void shouldGetEmailFromRefreshToken() {
-        String token = testingInstance.generateRefreshToken(EMAIL);
+        RefreshTokenDTO token = testingInstance.generateRefreshToken(EMAIL);
 
-        String result = testingInstance.getLoginFromRefreshToken(token);
+        String result = testingInstance.getLoginFromToken(token);
 
         assertThat(result, is(EMAIL));
     }
@@ -78,7 +80,7 @@ class JWTProviderTest {
     void shouldThrowExceptionWithTokenExpiredMessageWhenExpiredToken() {
         ReflectionTestUtils.setField(testingInstance, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_EXPIRATION_ZERO_VALUE);
 
-        String token = testingInstance.generateAccessToken(EMAIL);
+        AccessTokenDTO token = testingInstance.generateAccessToken(EMAIL);
 
         TokenValidationException tokenValidationException =
                 assertThrows(TokenValidationException.class, () -> testingInstance.validateToken(token));

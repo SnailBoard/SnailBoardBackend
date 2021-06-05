@@ -1,7 +1,9 @@
 package ua.comsys.kpi.snailboard.token.refresh.service;
 
-public interface RefreshTokenService {
-    void createOrUpdateRefreshToken(String email, String refreshToken);
+import ua.comsys.kpi.snailboard.token.refresh.dto.RefreshTokenDTO;
 
-    boolean validateToken(String email, String tokenToValidate);
+public interface RefreshTokenService {
+    void createOrUpdateRefreshToken(String email, RefreshTokenDTO refreshToken);
+
+    void validateTokenMatchWithUser(String email, String tokenToValidate);
 }

@@ -7,15 +7,11 @@ import ua.comsys.kpi.snailboard.team.exception.TeamInvitationException;
 import ua.comsys.kpi.snailboard.team.dto.GetTeamResponse;
 import ua.comsys.kpi.snailboard.team.facade.TeamFacade;
 import ua.comsys.kpi.snailboard.team.model.Team;
-import ua.comsys.kpi.snailboard.team.model.TeamInvite;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
-import ua.comsys.kpi.snailboard.utils.StringUtils;
 
-import java.util.Collections;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,13 +36,13 @@ public class TeamFacadeImpl implements TeamFacade {
 
     @Override
     public void generateAndSendLink(UUID teamId, String userEmail) {
+        Map<String, String> emailProps = new HashMap<>();
         String inviteLink = teamService.generateLink(teamId, userEmail);
         String teamName = teamService.getTeamNameById(teamId);
-        emailService.sendEmail(
-                userEmail,
-                inviteLink,
-                "Snailboard team invitation"
-                );
+        emailProps.put("invite_link", inviteLink);
+        emailProps.put("team_name", teamName);
+
+        emailService.sendEmail(userEmail, emailProps, "invitation.html", "Snailboard team invitation");
     }
 
     @Override

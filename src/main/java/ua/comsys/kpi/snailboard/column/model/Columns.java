@@ -1,11 +1,16 @@
-package ua.comsys.kpi.snailboard.column;
+package ua.comsys.kpi.snailboard.column.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import ua.comsys.kpi.snailboard.board.model.Board;
+import ua.comsys.kpi.snailboard.ticket.model.Ticket;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,13 +29,26 @@ public class Columns {
     private UUID id;
 
     @Column
-    private String code;
+    private String name;
 
     @Column
-    private LocalDate createdAt;
+    private String description;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Column(unique = true)
+    private int columnPosition;
+
+    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Ticket> tickets;
 }

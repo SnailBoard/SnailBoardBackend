@@ -1,23 +1,46 @@
 package ua.comsys.kpi.snailboard.email.impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ua.comsys.kpi.snailboard.email.EmailService;
+import ua.comsys.kpi.snailboard.utils.FileManager;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 @Component
 public class EmailServiceImpl implements EmailService {
 
+    @Value("${email.from}")
+    private String SNAILBOARD_EMAIL;
+    @Value("${email.password}")
+    private String SNAILBOARD_PASSWORD;
+
+    private static final String HTML_TEXT = "text/html";
+
     @Override
-    public void sendEmail(String recipient, String messageText, String subject) {
+    public void sendEmail(String recipient, Map<String, String> templateProps, String templateName, String subject) {
+        Message message = createMessage();
+        String template = fillProps(templateProps, FileManager.readPropFile(templateName));
+
+        try {
+            message.setFrom(new InternetAddress(SNAILBOARD_EMAIL, false));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+            message.setSubject(subject);
+            message.setContent(template, HTML_TEXT);
+            message.setSentDate(new Date());
+
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Message createMessage() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -25,42 +48,18 @@ public class EmailServiceImpl implements EmailService {
         props.put("mail.smtp.port", "587");
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("snailboardinc@gmail.com", "snailboard123");
+                return new PasswordAuthentication(SNAILBOARD_EMAIL, SNAILBOARD_PASSWORD);
             }
         });
-        Message msg = new MimeMessage(session);
-        StringBuilder contentBuilder = new StringBuilder();
-        try {
-            String path = System.getProperty("user.dir") + "\\src\\main\\resources" + "\\template.html";
-            System.out.println("Path " + path);
-            BufferedReader in = new BufferedReader(new FileReader(path));
-            String str;
-            while ((str = in.readLine()) != null) {
-                contentBuilder.append(str);
-            }
-            in.close();
-        } catch (IOException | NullPointerException e) {
-            System.out.println("Exception");
-            System.out.println(e);
+
+        return new MimeMessage(session);
+    }
+
+    private String fillProps(Map<String, String> props, String template) {
+        String newTemplate = template;
+        for (Map.Entry<String, String> entry : props.entrySet()) {
+            newTemplate = newTemplate.replaceAll("\\{" + entry.getKey() + "}", entry.getValue());
         }
-        String template = contentBuilder.toString();
-
-        template = template.replaceAll("\\{LINK\\}", messageText);
-
-        System.out.println("Html template!");
-        System.out.println(template);
-        try {
-            msg.setFrom(new InternetAddress("snailboardinc@gmail.com", false));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-            msg.setSubject(subject);
-            msg.setContent(template, "text/html");
-            msg.setSentDate(new Date());
-
-            Transport.send(msg);
-
-            System.out.println(messageText + " to " + recipient);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+        return newTemplate;
     }
 }
