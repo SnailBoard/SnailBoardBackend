@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.comsys.kpi.snailboard.user.dto.UserInfoDto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,8 +15,8 @@ import java.util.UUID;
 public class TicketInfo {
     String name;
     String description;
-    String reporter;
-    String assignee;
+    UserInfoDto reporter;
+    UserInfoDto assignee;
     @JsonProperty("created_at")
     LocalDateTime createdAt;
     @JsonProperty("updated_at")

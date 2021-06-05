@@ -50,7 +50,7 @@ class BoardServiceImplTest {
     }
 
     @Test
-    void shouldSaveBoardIfUserBelongsToTeam() {
+    void shouldNotSaveBoardIfUserNotBelongsToTeam() {
         Team testTeam = Team.builder().id(UUID_2).build();
 
         Assertions.assertThrows(UserNotBelongsToTeam.class, () -> testingInstance.createInitial(NAME, DESC, testTeam));
