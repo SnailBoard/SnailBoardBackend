@@ -33,7 +33,7 @@ public class TeamController {
     }
 
     @Secured("ROLE_USER")
-    @GetMapping(value = "/generateLink")
+    @PostMapping(value = "/generateLink")
     public void generateAndSendInviteLinkForTeamToUser(@RequestParam UUID teamId, @RequestParam String userEmail) {
         teamFacade.generateAndSendLink(teamId, userEmail);
     }

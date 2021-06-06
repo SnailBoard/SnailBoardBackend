@@ -20,8 +20,9 @@ public class EmailServiceImpl implements EmailService {
     private String SNAILBOARD_EMAIL;
     @Value("${email.password}")
     private String SNAILBOARD_PASSWORD;
+
     private static final String HTML_TEXT = "text/html";
-    String template;
+    private String template;
 
     @Override
     public void sendEmail(String recipient, Map<String, String> templateProps, String templateName, String subject) {

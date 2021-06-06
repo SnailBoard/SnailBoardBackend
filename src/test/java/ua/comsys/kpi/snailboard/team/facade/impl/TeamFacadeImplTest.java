@@ -10,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ua.comsys.kpi.snailboard.email.EmailService;
 import ua.comsys.kpi.snailboard.team.dto.GetTeamResponse;
 import ua.comsys.kpi.snailboard.team.model.Team;
+import ua.comsys.kpi.snailboard.team.model.TeamInvite;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
@@ -32,7 +33,6 @@ class TeamFacadeImplTest {
     private static final int USERS_COUNT = 2;
     private static final UUID UUID_VALUE = UUID.randomUUID();
     private static final String EMAIL = "pawloiwanov@gmail.com";
-    private static final String INVITE_LINK = "http://localhost:3000/team/invite/" + UUID_VALUE;
     private static final String TEMPLATE_NAME = "invitation.html";
     private static final String INVITATION_SUBJECT = "Snailboard team invitation";
 
@@ -84,5 +84,19 @@ class TeamFacadeImplTest {
         testingInstance.generateAndSendLink(UUID_VALUE, EMAIL);
 
         verify(emailService).sendEmail(eq(EMAIL), any(HashMap.class), eq(TEMPLATE_NAME), eq(INVITATION_SUBJECT));
+    }
+
+    @Test
+    void shouldAcceptTeamInvitation() {
+        Team team = Team.builder().id(UUID_VALUE).build();
+        User user = User.builder().email(EMAIL).build();
+        TeamInvite teamInvite = TeamInvite.builder().invitedEmail(EMAIL).team(team).build();
+        when(teamService.getTeamInviteById(UUID_VALUE)).thenReturn(teamInvite);
+        when(userService.getCurrentUserModel()).thenReturn(user);
+
+        testingInstance.acceptTeamInvitation(UUID_VALUE);
+
+        verify(teamService).deleteTeamInvitation(teamInvite);
+        verify(teamService).addUserToTeam(user, UUID_VALUE);
     }
 }
