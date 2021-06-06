@@ -3,7 +3,8 @@ package ua.comsys.kpi.snailboard.email.impl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ua.comsys.kpi.snailboard.email.EmailService;
-import ua.comsys.kpi.snailboard.utils.FileManager;
+import ua.comsys.kpi.snailboard.email.exception.CannotSendEmailException;
+import ua.comsys.kpi.snailboard.utils.files.FileManager;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -19,13 +20,13 @@ public class EmailServiceImpl implements EmailService {
     private String SNAILBOARD_EMAIL;
     @Value("${email.password}")
     private String SNAILBOARD_PASSWORD;
-
     private static final String HTML_TEXT = "text/html";
+    String template;
 
     @Override
     public void sendEmail(String recipient, Map<String, String> templateProps, String templateName, String subject) {
         Message message = createMessage();
-        String template = fillProps(templateProps, FileManager.readPropFile(templateName));
+        template = fillProps(templateProps, FileManager.readPropFile(templateName));
 
         try {
             message.setFrom(new InternetAddress(SNAILBOARD_EMAIL, false));
@@ -36,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
             Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new CannotSendEmailException(e.getMessage());
         }
     }
 
@@ -61,5 +62,11 @@ public class EmailServiceImpl implements EmailService {
             newTemplate = newTemplate.replaceAll("\\{" + entry.getKey() + "}", entry.getValue());
         }
         return newTemplate;
+    }
+
+    //for testing
+    @Deprecated
+    public String getTemplate() {
+        return template;
     }
 }

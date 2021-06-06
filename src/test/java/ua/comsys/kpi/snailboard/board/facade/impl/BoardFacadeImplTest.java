@@ -34,8 +34,6 @@ class BoardFacadeImplTest {
     private static final String NAME_2 = "NAME_2";
     private static final String DESC_2 = "DESC_2";
     private static final UUID UUID_1 = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa147f");
-    private static final String UUID_1_STRING = "115655a0-0bbc-44fd-92b2-df2643fa147f";
-    private static final String INVALID_UUID_STRING = "invalid";
 
     @Mock
     private BoardService boardService;
@@ -55,16 +53,11 @@ class BoardFacadeImplTest {
     }
 
     @Test
-    void shouldSaveBoardIfUserBelongsToTeam() {
-        Assertions.assertThrows(InvalidTeamIdFormat.class, () -> testingInstance.createInitial(NAME_1, DESC_1, INVALID_UUID_STRING));
-    }
-
-    @Test
     void shouldNotCreateIfUserNotBelongsToTeam() {
         Team team = Team.builder().id(UUID_1).build();
         when(teamService.getTeamById(UUID_1)).thenReturn(team);
 
-        testingInstance.createInitial(NAME_1, DESC_1, UUID_1_STRING);
+        testingInstance.createInitial(NAME_1, DESC_1, UUID_1);
 
         verify(boardService).createInitial(NAME_1, DESC_1, team);
     }
@@ -82,7 +75,7 @@ class BoardFacadeImplTest {
         when(boardService.getBoardsByTeam(team)).thenReturn(boards);
         when(users.size()).thenReturn(3);
 
-        GetBoardResponse result = testingInstance.getBoardsByTeam(UUID_1_STRING);
+        GetBoardResponse result = testingInstance.getBoardsByTeam(UUID_1);
 
         assertThat(result.getBoards().size(), is(2));
         assertThat(result.getBoards().get(0).getName(), is(NAME_1));
@@ -95,7 +88,7 @@ class BoardFacadeImplTest {
         Board board = Board.builder().name(NAME_1).description(DESC_1).build();
         when(boardService.getBoardById(UUID_1)).thenReturn(board);
 
-        testingInstance.getBoardById(UUID_1_STRING);
+        testingInstance.getBoardById(UUID_1);
 
         verify(getBoardByIdResponseConverter).convert(board);
     }

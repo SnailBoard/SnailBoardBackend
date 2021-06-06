@@ -7,16 +7,17 @@ import ua.comsys.kpi.snailboard.team.dao.TeamRepository;
 import ua.comsys.kpi.snailboard.team.exception.TeamInvitationException;
 import ua.comsys.kpi.snailboard.team.exception.TeamNotFoundException;
 import ua.comsys.kpi.snailboard.team.exception.TeamNotFoundException;
+import ua.comsys.kpi.snailboard.team.exception.UserNotBelongsToTeam;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.model.TeamInvite;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
+import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 
-import java.util.UUID;
+import java.util.*;
+
 import ua.comsys.kpi.snailboard.user.model.User;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private TeamInviteRepository teamInviteRepository;
+
+    @Autowired
+    private UserFacade userFacade;
 
     @Override
     public void create(Team team) {
@@ -45,9 +49,11 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public String generateLink(UUID teamId, String userEmail) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        validateUserBelongsToTeam(team);
         var newTeamInvite = new TeamInvite();
         newTeamInvite.setInvitedEmail(userEmail);
-        newTeamInvite.setTeam(teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new));
+        newTeamInvite.setTeam(team);
         return "http://localhost:3000/team/invite/" + teamInviteRepository.save(newTeamInvite).getId().toString();
     }
 
@@ -75,5 +81,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void deleteTeamInvitation(TeamInvite teamInvite) {
         teamInviteRepository.delete(teamInvite);
+    }
+
+    public void validateUserBelongsToTeam(Team team) {
+        User currentUser = userFacade.getCurrentUserModel();
+        currentUser.getTeams().stream().filter(t -> t.getId().equals(team.getId())).findFirst()
+                .orElseThrow(UserNotBelongsToTeam::new);
     }
 }

@@ -17,6 +17,11 @@ import java.util.stream.Collectors;
 @Component
 public class TeamFacadeImpl implements TeamFacade {
 
+    private static final String TEMPLATE_NAME = "invitation.html";
+    private static final String INVITATION_SUBJECT = "Snailboard team invitation";
+    private static final String INVITE_LINK_KEY = "invite_link";
+    private static final String TEAM_NAME_KEY = "team_name";
+
     @Autowired
     private UserFacade userFacade;
 
@@ -36,13 +41,13 @@ public class TeamFacadeImpl implements TeamFacade {
 
     @Override
     public void generateAndSendLink(UUID teamId, String userEmail) {
-        Map<String, String> emailProps = new HashMap<>();
         String inviteLink = teamService.generateLink(teamId, userEmail);
         String teamName = teamService.getTeamNameById(teamId);
-        emailProps.put("invite_link", inviteLink);
-        emailProps.put("team_name", teamName);
+        Map<String, String> emailProps = new HashMap<>();
+        emailProps.put(INVITE_LINK_KEY, inviteLink);
+        emailProps.put(TEAM_NAME_KEY, teamName);
 
-        emailService.sendEmail(userEmail, emailProps, "invitation.html", "Snailboard team invitation");
+        emailService.sendEmail(userEmail, emailProps, TEMPLATE_NAME, INVITATION_SUBJECT);
     }
 
     @Override

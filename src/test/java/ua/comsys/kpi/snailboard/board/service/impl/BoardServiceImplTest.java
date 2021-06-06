@@ -48,20 +48,4 @@ class BoardServiceImplTest {
         User user = User.builder().teams(teams).build();
         when(userFacade.getCurrentUserModel()).thenReturn(user);
     }
-
-    @Test
-    void shouldNotSaveBoardIfUserNotBelongsToTeam() {
-        Team testTeam = Team.builder().id(UUID_2).build();
-
-        Assertions.assertThrows(UserNotBelongsToTeam.class, () -> testingInstance.createInitial(NAME, DESC, testTeam));
-    }
-
-    @Test
-    void shouldNotCreateIfUserNotBelongsToTeam() {
-        Team testTeam = Team.builder().id(UUID_1).build();
-
-        testingInstance.createInitial(NAME, DESC, testTeam);
-
-        verify(boardRepository).save(any(Board.class));
-    }
 }

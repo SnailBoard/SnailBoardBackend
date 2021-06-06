@@ -1,4 +1,4 @@
-package ua.comsys.kpi.snailboard.utils;
+package ua.comsys.kpi.snailboard.utils.files;
 
 import org.springframework.util.ResourceUtils;
 

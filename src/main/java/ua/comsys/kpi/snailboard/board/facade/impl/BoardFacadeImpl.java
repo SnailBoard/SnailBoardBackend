@@ -8,7 +8,6 @@ import ua.comsys.kpi.snailboard.board.dto.GetBoardResponse;
 import ua.comsys.kpi.snailboard.board.facade.BoardFacade;
 import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.board.service.BoardService;
-import ua.comsys.kpi.snailboard.team.exception.InvalidTeamIdFormat;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.utils.Converter;
@@ -30,15 +29,13 @@ public class BoardFacadeImpl implements BoardFacade {
     Converter<Board, GetBoardByIdResponse> getBoardByIdResponseConverter;
 
     @Override
-    public void createInitial(String name, String description, String teamId) {
-        validateIdType(teamId);
-        Team team = teamService.getTeamById(UUID.fromString(teamId));
+    public void createInitial(String name, String description, UUID teamId) {
+        Team team = teamService.getTeamById(teamId);
         boardService.createInitial(name, description, team);
     }
 
-    public GetBoardResponse getBoardsByTeam(String teamId) {
-        validateIdType(teamId);
-        Team team = teamService.getTeamById(UUID.fromString(teamId));
+    public GetBoardResponse getBoardsByTeam(UUID teamId) {
+        Team team = teamService.getTeamById(teamId);
         List<Board> boards = boardService.getBoardsByTeam(team);
         List<BoardPreviewInfo> boardsInfo = boards.stream()
                 .map(board -> new BoardPreviewInfo(board.getName(), board.getDescription()))
@@ -47,17 +44,8 @@ public class BoardFacadeImpl implements BoardFacade {
     }
 
     @Override
-    public GetBoardByIdResponse getBoardById(String boardId) {
-        validateIdType(boardId);
-        Board board = boardService.getBoardById(UUID.fromString(boardId));
+    public GetBoardByIdResponse getBoardById(UUID boardId) {
+        Board board = boardService.getBoardById(boardId);
         return getBoardByIdResponseConverter.convert(board);
-    }
-
-    private void validateIdType(String teamId) {
-        try {
-            UUID.fromString(teamId);
-        } catch (Exception ex) {
-            throw new InvalidTeamIdFormat();
-        }
     }
 }

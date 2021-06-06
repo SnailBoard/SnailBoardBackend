@@ -26,4 +26,6 @@ public interface TeamService {
     List<Team> getTeamsByUser(User user);
 
     Team getTeamById(UUID uuid);
+
+    void validateUserBelongsToTeam(Team team);
 }
