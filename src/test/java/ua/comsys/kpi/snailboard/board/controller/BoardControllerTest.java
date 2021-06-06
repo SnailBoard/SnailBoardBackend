@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ua.comsys.kpi.snailboard.board.dto.CreateBoardRequest;
 import ua.comsys.kpi.snailboard.board.facade.BoardFacade;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +30,7 @@ class BoardControllerTest {
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
-    private static final String UUID_STRING = "115655a0-0bbc-44fd-92b2-df2643fa147f";
+    private static final UUID UUID_VALUE = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa147f");
 
     @Mock
     BoardFacade boardFacade;
@@ -45,13 +47,13 @@ class BoardControllerTest {
 
     @Test
     void shouldCreateTeam() throws Exception {
-        CreateBoardRequest request = new CreateBoardRequest(UUID_STRING, NAME, DESCRIPTION);
+        CreateBoardRequest request = new CreateBoardRequest(UUID_VALUE, NAME, DESCRIPTION);
         mockMvc.perform(post(URL_CREATE_INITIAL_BOARD)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated());
 
-        verify(boardFacade).createInitial(NAME, DESCRIPTION, UUID_STRING);
+        verify(boardFacade).createInitial(NAME, DESCRIPTION, UUID_VALUE);
     }
 
     @Test
@@ -59,7 +61,7 @@ class BoardControllerTest {
     void shouldGetBoardByTeam() throws Exception {
         mockMvc.perform(get(URL_GET_BOARD_BY_TEAM))
                 .andExpect(status().isOk());
-        verify(boardFacade).getBoardsByTeam(UUID_STRING);
+        verify(boardFacade).getBoardsByTeam(UUID_VALUE);
     }
 
     @Test
@@ -67,7 +69,7 @@ class BoardControllerTest {
     void shouldGetBoardById() throws Exception {
         mockMvc.perform(get(URL_GET_BOARD_BY_ID))
                 .andExpect(status().isOk());
-        verify(boardFacade).getBoardById(UUID_STRING);
+        verify(boardFacade).getBoardById(UUID_VALUE);
     }
 
     private static String asJsonString(final Object obj) {

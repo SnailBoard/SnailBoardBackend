@@ -9,6 +9,8 @@ import ua.comsys.kpi.snailboard.board.dto.GetBoardByIdResponse;
 import ua.comsys.kpi.snailboard.board.dto.GetBoardResponse;
 import ua.comsys.kpi.snailboard.board.facade.BoardFacade;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/board")
 public class BoardController {
@@ -25,13 +27,13 @@ public class BoardController {
 
     @Secured("ROLE_USER")
     @GetMapping("byTeam/{teamId}")
-    public GetBoardResponse getBoardByTeam(@PathVariable String teamId) {
+    public GetBoardResponse getBoardByTeam(@PathVariable UUID teamId) {
         return boardFacade.getBoardsByTeam(teamId);
     }
 
     @Secured("ROLE_USER")
     @GetMapping("{boardId}")
-    public GetBoardByIdResponse getBoardById(@PathVariable String boardId) {
+    public GetBoardByIdResponse getBoardById(@PathVariable UUID boardId) {
         return boardFacade.getBoardById(boardId);
     }
 }

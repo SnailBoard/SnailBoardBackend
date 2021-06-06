@@ -13,4 +13,6 @@ public interface UserFacade {
     List<UserInfoDto> getUsersByUsername(String username);
 
     List<UserInfoDto> getUsersByUsername(String username, Integer limit);
+
+    List<UserInfoDto> getAllUsersInfo();
 }
