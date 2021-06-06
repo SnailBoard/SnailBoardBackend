@@ -34,6 +34,8 @@ class BoardFacadeImplTest {
     private static final String NAME_2 = "NAME_2";
     private static final String DESC_2 = "DESC_2";
     private static final UUID UUID_1 = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa147f");
+    private static final UUID UUID_2 = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa148f");
+
 
     @Mock
     private BoardService boardService;
@@ -67,8 +69,8 @@ class BoardFacadeImplTest {
         List<User> users = spy(new ArrayList<>());
         Team team = Team.builder().id(UUID_1).users(users).build();
         List<Board> boards = new ArrayList<>();
-        Board board1 = Board.builder().name(NAME_1).description(DESC_1).build();
-        Board board2 = Board.builder().name(NAME_2).description(DESC_2).build();
+        Board board1 = Board.builder().name(NAME_1).description(DESC_1).id(UUID_1).build();
+        Board board2 = Board.builder().name(NAME_2).description(DESC_2).id(UUID_2).build();
         boards.add(board1);
         boards.add(board2);
         when(teamService.getTeamById(UUID_1)).thenReturn(team);
@@ -79,6 +81,7 @@ class BoardFacadeImplTest {
 
         assertThat(result.getBoards().size(), is(2));
         assertThat(result.getBoards().get(0).getName(), is(NAME_1));
+        assertThat(result.getBoards().get(0).getId(), is(UUID_1));
         assertThat(result.getBoards().get(1).getDescription(), is(DESC_2));
         assertThat(result.getMemberCount(), is(3));
     }

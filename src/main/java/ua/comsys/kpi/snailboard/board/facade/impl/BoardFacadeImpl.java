@@ -38,7 +38,7 @@ public class BoardFacadeImpl implements BoardFacade {
         Team team = teamService.getTeamById(teamId);
         List<Board> boards = boardService.getBoardsByTeam(team);
         List<BoardPreviewInfo> boardsInfo = boards.stream()
-                .map(board -> new BoardPreviewInfo(board.getName(), board.getDescription()))
+                .map(board -> new BoardPreviewInfo(board.getId() ,board.getName(), board.getDescription()))
                 .collect(Collectors.toList());
         return new GetBoardResponse(boardsInfo, team.getUsers().size());
     }

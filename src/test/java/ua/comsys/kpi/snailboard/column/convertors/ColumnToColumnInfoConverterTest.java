@@ -1,5 +1,6 @@
 package ua.comsys.kpi.snailboard.column.convertors;
 
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,7 @@ import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +52,7 @@ class ColumnToColumnInfoConverterTest {
         Columns column = new Columns();
         column.setName(NAME);
         column.setDescription(DESCRIPTION);
-        column.setTickets(Collections.singletonList(ticket));
+        column.setTickets(Set.of(ticket));
 
         when(ticketTicketInfoConverter.convert(ticket)).thenReturn(ticketInfo);
 
