@@ -43,11 +43,10 @@ public class Columns {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @Column(unique = true)
     private int columnPosition;
 
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

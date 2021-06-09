@@ -68,6 +68,5 @@ public class Ticket {
     @JoinColumn(name = "column_id")
     private Columns column;
 
-    @Column(unique = true)
     private int columnPosition;
 }
