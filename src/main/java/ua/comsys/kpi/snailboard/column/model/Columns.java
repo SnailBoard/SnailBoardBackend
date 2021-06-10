@@ -43,7 +43,7 @@ public class Columns {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "board_id")
     private Board board;
 
