@@ -7,16 +7,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import ua.comsys.kpi.snailboard.board.model.Board;
 import ua.comsys.kpi.snailboard.board.service.BoardService;
+import ua.comsys.kpi.snailboard.column.convertors.ColumnToColumnInfoConverter;
 import ua.comsys.kpi.snailboard.column.dao.ColumnRepository;
+import ua.comsys.kpi.snailboard.column.dto.ColumnInfo;
 import ua.comsys.kpi.snailboard.column.dto.CreateColumnRequest;
 import ua.comsys.kpi.snailboard.column.dto.UpdateColumnPosition;
 import ua.comsys.kpi.snailboard.column.exception.NotUniquePositionException;
 import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
+import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -33,8 +37,8 @@ class ColumnServiceTest {
 
     public static final UUID BOARD_UUID_1 = UUID.randomUUID();
     public static final UUID COLUMN_UUID_1 = UUID.randomUUID();
-    public static final String BOARD_NAME = "name";
-    public static final String BOARD_DESCRIPTION = "description";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_DESCRIPTION = "description";
     private static final Columns column = new Columns();
     private static final Board board = new Board();
     @Mock
@@ -46,6 +50,8 @@ class ColumnServiceTest {
     @Mock
     private ColumnRepository columnRepository;
 
+    @Mock
+    Converter<Columns, ColumnInfo> columnsColumnInfoConverter;
 
     @InjectMocks
     private final ColumnService testingInstance = new ColumnService();
@@ -66,14 +72,15 @@ class ColumnServiceTest {
         CreateColumnRequest createColumnRequest = new CreateColumnRequest();
         createColumnRequest.setColumnPosition(2);
         createColumnRequest.setBoardId(BOARD_UUID_1);
-        createColumnRequest.setName(BOARD_NAME);
-        createColumnRequest.setDescription(BOARD_DESCRIPTION);
+        createColumnRequest.setName(COLUMN_NAME);
+        createColumnRequest.setDescription(COLUMN_DESCRIPTION);
 
         when(boardService.getBoardById(BOARD_UUID_1)).thenReturn(board);
 
         testingInstance.createInitial(createColumnRequest);
 
         verify(columnRepository).save(any(Columns.class));
+        verify(columnsColumnInfoConverter).convert(any(Columns.class));
     }
 
     @Test
@@ -81,8 +88,8 @@ class ColumnServiceTest {
         CreateColumnRequest createColumnRequest = new CreateColumnRequest();
         createColumnRequest.setColumnPosition(2);
         createColumnRequest.setBoardId(BOARD_UUID_1);
-        createColumnRequest.setName(BOARD_NAME);
-        createColumnRequest.setDescription(BOARD_DESCRIPTION);
+        createColumnRequest.setName(COLUMN_NAME);
+        createColumnRequest.setDescription(COLUMN_DESCRIPTION);
         board.getColumns().add(Columns.builder().columnPosition(2).build());
 
         when(boardService.getBoardById(BOARD_UUID_1)).thenReturn(board);
