@@ -1,6 +1,5 @@
 package ua.comsys.kpi.snailboard.column.convertors;
 
-import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -10,15 +9,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import ua.comsys.kpi.snailboard.column.dto.ColumnInfo;
 import ua.comsys.kpi.snailboard.column.model.Columns;
-import ua.comsys.kpi.snailboard.ticket.converters.TicketToTicketInfoConverter;
 import ua.comsys.kpi.snailboard.ticket.dto.TicketInfo;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
-import ua.comsys.kpi.snailboard.user.dto.UserInfoDto;
-import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.utils.Converter;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;

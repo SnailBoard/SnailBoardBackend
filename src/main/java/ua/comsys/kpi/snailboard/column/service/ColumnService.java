@@ -7,14 +7,13 @@ import ua.comsys.kpi.snailboard.board.service.BoardService;
 import ua.comsys.kpi.snailboard.column.dao.ColumnRepository;
 import ua.comsys.kpi.snailboard.column.dto.CreateColumnRequest;
 import ua.comsys.kpi.snailboard.column.dto.UpdateColumnPosition;
+import ua.comsys.kpi.snailboard.column.exception.ColumnNotFoundException;
 import ua.comsys.kpi.snailboard.column.exception.NotUniquePositionException;
 import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Service
 public class ColumnService {
@@ -49,29 +48,34 @@ public class ColumnService {
     }
 
     public void updateColumnPositions(UpdateColumnPosition newColumnPosition) {
-        Columns column = columnRepository.findById(newColumnPosition.getId()).orElseThrow();
+        Columns column = columnRepository.findById(newColumnPosition.getId()).orElseThrow(ColumnNotFoundException::new);
         if (column.getColumnPosition() == newColumnPosition.getPosition()) {
             return;
         }
-        boolean newValueIsBigger = column.getColumnPosition() <= newColumnPosition.getPosition();
+        columnRepository.saveAll(getColumnsEligibleForUpdate(column.getBoard().getColumns(),
+                column, newColumnPosition.getPosition()));
+    }
+
+    public Set<Columns> getColumnsEligibleForUpdate(Set<Columns> columns, Columns columnToUpdate, int newPosition) {
+        int currentPosition = columnToUpdate.getColumnPosition();
+        boolean newValueIsBigger = currentPosition <= newPosition;
         Set<Columns> columnsToUpdate = new HashSet<>();
-        column.getBoard().getColumns().forEach(clmn -> {
+        columns.forEach(column -> {
+            int columnPosition = column.getColumnPosition();
             if (newValueIsBigger) {
-                if (clmn.getColumnPosition() > column.getColumnPosition()
-                        && clmn.getColumnPosition() <= newColumnPosition.getPosition()) {
-                    clmn.setColumnPosition(clmn.getColumnPosition() - 1);
-                    columnsToUpdate.add(clmn);
+                if (columnPosition > currentPosition && columnPosition <= newPosition) {
+                    column.setColumnPosition(columnPosition - 1);
+                    columnsToUpdate.add(column);
                 }
             } else {
-                if (clmn.getColumnPosition() < column.getColumnPosition()
-                        && clmn.getColumnPosition() >= newColumnPosition.getPosition()) {
-                    clmn.setColumnPosition(clmn.getColumnPosition() + 1);
-                    columnsToUpdate.add(clmn);
+                if (columnPosition < currentPosition && columnPosition >= newPosition) {
+                    column.setColumnPosition(columnPosition + 1);
+                    columnsToUpdate.add(column);
                 }
             }
         });
-        column.setColumnPosition(newColumnPosition.getPosition());
-        columnsToUpdate.add(column);
-        columnRepository.saveAll(columnsToUpdate);
+        columnToUpdate.setColumnPosition(newPosition);
+        columnsToUpdate.add(columnToUpdate);
+        return columnsToUpdate;
     }
 }
