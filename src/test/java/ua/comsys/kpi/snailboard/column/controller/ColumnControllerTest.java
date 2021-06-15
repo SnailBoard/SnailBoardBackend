@@ -12,11 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ua.comsys.kpi.snailboard.column.dto.CreateColumnRequest;
+import ua.comsys.kpi.snailboard.column.dto.UpdateColumnPosition;
 import ua.comsys.kpi.snailboard.column.service.ColumnService;
 
 import java.util.UUID;
 
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,10 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ColumnControllerTest {
 
     private static final String URL_CREATE_INITIAL_COLUMN = "/column";
+    private static final String URL_UPDATE_COLUMN_POSITION = "/column/updatePosition";
 
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
     private static final UUID BOARD_UUID = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa147f");
+    private static final UUID COLUMN_UUID = UUID.fromString("115655a0-0bbc-44fd-92b2-df2643fa147f");
     private static final Integer BOARD_POSITION = 1;
 
     @Mock
@@ -52,6 +56,17 @@ class ColumnControllerTest {
                 .andExpect(status().isCreated());
 
         verify(columnService).createInitial(request);
+    }
+
+    @Test
+    void shouldUpdateColumnPosition() throws Exception {
+        UpdateColumnPosition request = new UpdateColumnPosition(COLUMN_UUID, 1);
+        mockMvc.perform(patch(URL_UPDATE_COLUMN_POSITION)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request)))
+                .andExpect(status().isOk());
+
+        verify(columnService).updateColumnPositions(request);
     }
 
     private static String asJsonString(final Object obj) {
