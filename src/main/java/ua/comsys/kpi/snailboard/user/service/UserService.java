@@ -5,6 +5,7 @@ import ua.comsys.kpi.snailboard.user.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
     User createUser(User userEntity);
@@ -20,4 +21,6 @@ public interface UserService {
     List<User> getUsersByUsernameWithLimit(String username, Integer limit);
 
     List<User> getAllUsers();
+
+    User getUserById(UUID userId);
 }
