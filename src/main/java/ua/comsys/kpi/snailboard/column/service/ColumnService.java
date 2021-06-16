@@ -16,6 +16,7 @@ import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ColumnService {
@@ -31,6 +32,10 @@ public class ColumnService {
 
     @Autowired
     Converter<Columns, ColumnInfo> columnsColumnInfoConverter;
+
+    public Columns getColumnById(UUID columnId){
+        return columnRepository.findById(columnId).orElseThrow(ColumnNotFoundException::new);
+    }
 
     public ColumnInfo createInitial(CreateColumnRequest request) {
         Board board = boardService.getBoardById(request.getBoardId());

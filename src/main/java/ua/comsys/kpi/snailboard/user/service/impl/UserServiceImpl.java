@@ -20,6 +20,7 @@ import ua.comsys.kpi.snailboard.utils.Converter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,6 +39,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     Converter<User, UserInfoDto> userUserInfoDtoConverter;
+
+    @Override
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    }
 
     @Override
     public User createUser(User user) {
