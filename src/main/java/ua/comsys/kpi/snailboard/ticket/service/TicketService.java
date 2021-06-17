@@ -2,14 +2,16 @@ package ua.comsys.kpi.snailboard.ticket.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.comsys.kpi.snailboard.column.exception.NotUniquePositionException;
 import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.column.service.ColumnService;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
-import ua.comsys.kpi.snailboard.ticket.TicketRepository;
+import ua.comsys.kpi.snailboard.ticket.dao.TicketRepository;
 import ua.comsys.kpi.snailboard.ticket.dto.CreateTicketRequest;
 import ua.comsys.kpi.snailboard.ticket.dto.TicketInfo;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
+import ua.comsys.kpi.snailboard.ticket.model.TicketNumber;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
 import ua.comsys.kpi.snailboard.utils.Converter;
@@ -32,12 +34,19 @@ public class TicketService {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private TicketNumberService ticketNumberService;
+
+    @Transactional
     public TicketInfo createInitial(CreateTicketRequest request) {
         Columns column = columnService.getColumnById(request.getColumnId());
         teamService.validateUserBelongsToTeam(column.getBoard().getTeam());
         validatePositionIsUniqueForColumn(column, request.getColumnPosition());
         User assignee = userService.getUserById(request.getAssigneeId());
         User reporter = userService.getUserById(request.getReporterId());
+        ticketNumberService.incrementForBoard(column.getBoard().getId());
+        TicketNumber ticketNumber = ticketNumberService.getByBoardId(column.getBoard().getId());
+
         Ticket ticket = Ticket.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -45,6 +54,7 @@ public class TicketService {
                 .assignee(assignee)
                 .reporter(reporter)
                 .column(column)
+                .number(ticketNumber.getNumber() + 1)
                 .storyPoints(request.getStoryPoints())
                 .build();
 

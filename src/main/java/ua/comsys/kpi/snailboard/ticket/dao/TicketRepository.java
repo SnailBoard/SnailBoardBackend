@@ -1,4 +1,4 @@
-package ua.comsys.kpi.snailboard.ticket;
+package ua.comsys.kpi.snailboard.ticket.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
