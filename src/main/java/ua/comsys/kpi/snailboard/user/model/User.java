@@ -42,6 +42,9 @@ public class User {
     @Column(unique = true)
     private String username;
 
+    @Column
+    private String imageId;
+
     @OneToMany(mappedBy = "usr", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Statistic> statistics;
 

@@ -23,7 +23,7 @@ public class TeamController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void initialCreate(@RequestBody CreateTeamsRequest request) {
-        teamFacade.initialCreate(request.getName(), request.getDescription());
+        teamFacade.initialCreate(request.getName(), request.getDescription(), request.getImage());
     }
 
     @Secured("ROLE_USER")
@@ -33,7 +33,7 @@ public class TeamController {
     }
 
     @Secured("ROLE_USER")
-    @PostMapping(value = "/generateLink")
+    @GetMapping(value = "/generateLink")
     public void generateAndSendInviteLinkForTeamToUser(@RequestParam UUID teamId, @RequestParam String userEmail) {
         teamFacade.generateAndSendLink(teamId, userEmail);
     }

@@ -58,7 +58,7 @@ class TeamFacadeImplTest {
         User user = new User();
         when(userService.getCurrentUserModel()).thenReturn(user);
 
-        testingInstance.initialCreate(TEST_NAME, TEST_DESC);
+        testingInstance.initialCreate(TEST_NAME, TEST_DESC, "sadsa");
 
         verify(teamService).create(any());
     }

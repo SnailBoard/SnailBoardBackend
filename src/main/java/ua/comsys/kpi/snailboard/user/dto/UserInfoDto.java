@@ -15,4 +15,5 @@ public class UserInfoDto {
     private String email;
     private String username;
     private UUID id;
+    private String image;
 }

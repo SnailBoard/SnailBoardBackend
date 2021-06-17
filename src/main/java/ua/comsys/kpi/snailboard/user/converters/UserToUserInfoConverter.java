@@ -13,6 +13,8 @@ public class UserToUserInfoConverter implements Converter<User, UserInfoDto> {
                 .id(source.getId())
                 .email(source.getEmail())
                 .username(source.getUsername())
-                .firstName(source.getFirstName()).build();
+                .firstName(source.getFirstName())
+                .image(source.getImageId())
+                .build();
     }
 }

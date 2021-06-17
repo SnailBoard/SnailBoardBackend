@@ -16,4 +16,5 @@ public class GetTeamResponse {
     int memberCount;
     String name;
     String description;
+    String image;
 }

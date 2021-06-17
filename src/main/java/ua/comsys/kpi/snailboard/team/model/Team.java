@@ -35,6 +35,9 @@ public class Team {
     private String description;
 
     @Column
+    private String imageId;
+
+    @Column
     @CreationTimestamp
     private LocalDateTime createdAt;
 

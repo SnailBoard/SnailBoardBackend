@@ -34,10 +34,10 @@ public class TeamFacadeImpl implements TeamFacade {
     private EmailService emailService;
 
     @Override
-    public void initialCreate(String name, String description) {
+    public void initialCreate(String name, String description, String image) {
         User currentUser = userFacade.getCurrentUserModel();
         Team team = Team.builder().name(name).description(description).
-                users(Collections.singletonList(currentUser)).build();
+                users(Collections.singletonList(currentUser)).imageId(image).build();
         teamService.create(team);
     }
 
@@ -72,6 +72,7 @@ public class TeamFacadeImpl implements TeamFacade {
                 .id(team.getId())
                 .name(team.getName())
                 .description(team.getDescription())
+                .image(team.getImageId())
                 .memberCount(team.getUsers().size())
                 .build()).collect(Collectors.toList());
     }

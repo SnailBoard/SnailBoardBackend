@@ -53,13 +53,13 @@ class TeamControllerTest {
 
     @Test
     void shouldCreateTeam() throws Exception {
-        CreateTeamsRequest request = new CreateTeamsRequest(NAME, DESCRIPTION);
+        CreateTeamsRequest request = new CreateTeamsRequest(NAME, DESCRIPTION, "dsdas");
         mockMvc.perform(post(URL_CREATE_INITIAL_TEAM)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated());
 
-        verify(teamFacade).initialCreate(NAME, DESCRIPTION);
+        verify(teamFacade).initialCreate(NAME, DESCRIPTION, "dsasdas");
     }
 
     @Test

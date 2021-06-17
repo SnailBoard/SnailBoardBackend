@@ -12,4 +12,5 @@ public class RegistrationRequest {
     String password;
     String username;
     String firstName;
+    String image;
 }

@@ -40,6 +40,7 @@ public class AuthFacadeImpl implements AuthFacade {
                 .email(registrationRequest.getEmail())
                 .firstName(registrationRequest.getFirstName())
                 .username(registrationRequest.getUsername())
+                .imageId(registrationRequest.getImage())
                 .build();
         userService.createUser(user);
     }

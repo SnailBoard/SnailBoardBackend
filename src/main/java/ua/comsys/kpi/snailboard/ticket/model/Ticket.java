@@ -35,6 +35,9 @@ public class Ticket {
     @Column
     private Integer number;
 
+    @Column
+    private String imageId;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
     private List<TicketHistory> ticketHistories;
 

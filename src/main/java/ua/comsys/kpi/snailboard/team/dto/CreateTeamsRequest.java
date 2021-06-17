@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class CreateTeamsRequest {
     String name;
     String description;
+    String image;
 }
