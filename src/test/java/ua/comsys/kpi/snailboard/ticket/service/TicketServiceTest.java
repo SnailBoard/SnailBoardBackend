@@ -9,16 +9,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import ua.comsys.kpi.snailboard.board.model.Board;
-import ua.comsys.kpi.snailboard.column.dto.CreateColumnRequest;
 import ua.comsys.kpi.snailboard.column.exception.NotUniquePositionException;
 import ua.comsys.kpi.snailboard.column.model.Columns;
 import ua.comsys.kpi.snailboard.column.service.ColumnService;
 import ua.comsys.kpi.snailboard.team.model.Team;
 import ua.comsys.kpi.snailboard.team.service.TeamService;
-import ua.comsys.kpi.snailboard.ticket.TicketRepository;
+import ua.comsys.kpi.snailboard.ticket.dao.TicketRepository;
 import ua.comsys.kpi.snailboard.ticket.dto.CreateTicketRequest;
 import ua.comsys.kpi.snailboard.ticket.dto.TicketInfo;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
+import ua.comsys.kpi.snailboard.ticket.model.TicketNumber;
 import ua.comsys.kpi.snailboard.user.service.UserService;
 import ua.comsys.kpi.snailboard.utils.Converter;
 
@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 class TicketServiceTest {
 
     public static final UUID COLUMN_UUID_1 = UUID.randomUUID();
+    public static final UUID BOARD_UUID_1 = UUID.randomUUID();
     public static final String TICKET_NAME = "name";
     public static final String TICKET_DESCRIPTION = "description";
     private static final Columns column = new Columns();
@@ -53,6 +54,9 @@ class TicketServiceTest {
     @Mock
     private TeamService teamService;
 
+    @Mock
+    private TicketNumberService ticketNumberService;
+
     @InjectMocks
     private final TicketService testingInstance = new TicketService();
 
@@ -65,6 +69,7 @@ class TicketServiceTest {
         column.setBoard(board);
         column.setColumnPosition(1);
         board.setTeam(new Team());
+        board.setId(BOARD_UUID_1);
     }
 
     @Test
@@ -76,7 +81,7 @@ class TicketServiceTest {
         createTicketRequest.setDescription(TICKET_DESCRIPTION);
 
         when(columnService.getColumnById(COLUMN_UUID_1)).thenReturn(column);
-
+        when(ticketNumberService.getByBoardId(BOARD_UUID_1)).thenReturn(TicketNumber.builder().number(1).build());
         testingInstance.createInitial(createTicketRequest);
 
         verify(ticketRepository).save(any(Ticket.class));
