@@ -10,11 +10,14 @@ import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.ticket.dao.TicketRepository;
 import ua.comsys.kpi.snailboard.ticket.dto.CreateTicketRequest;
 import ua.comsys.kpi.snailboard.ticket.dto.TicketInfo;
+import ua.comsys.kpi.snailboard.ticket.dto.TicketWithColumnResponse;
 import ua.comsys.kpi.snailboard.ticket.model.Ticket;
 import ua.comsys.kpi.snailboard.ticket.model.TicketNumber;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.user.service.UserService;
 import ua.comsys.kpi.snailboard.utils.Converter;
+
+import java.util.UUID;
 
 @Service
 public class TicketService {
@@ -67,5 +70,11 @@ public class TicketService {
         if (column.getTickets().stream().anyMatch(ticket -> ticket.getColumnPosition() == position)){
             throw new NotUniquePositionException();
         }
+    }
+
+    public TicketWithColumnResponse getTicketById(UUID ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(RuntimeException::new);
+        teamService.validateUserBelongsToTeam(ticket.getColumn().getBoard().getTeam());
+        return new TicketWithColumnResponse(ticket.getColumn().getId(), ticketTicketInfoConverter.convert(ticket));
     }
 }

@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import ua.comsys.kpi.snailboard.board.dto.GetBoardByIdResponse;
 import ua.comsys.kpi.snailboard.ticket.dto.CreateTicketRequest;
-import ua.comsys.kpi.snailboard.ticket.dto.CreateTicketResponse;
-import ua.comsys.kpi.snailboard.ticket.dto.TicketInfo;
+import ua.comsys.kpi.snailboard.ticket.dto.TicketWithColumnResponse;
 import ua.comsys.kpi.snailboard.ticket.service.TicketService;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/ticket")
@@ -19,7 +21,14 @@ public class TicketController {
     @Secured("ROLE_USER")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CreateTicketResponse initialCreate(@RequestBody CreateTicketRequest request) {
-        return new CreateTicketResponse(request.getColumnId(), ticketService.createInitial(request));
+    public TicketWithColumnResponse initialCreate(@RequestBody CreateTicketRequest request) {
+        return new TicketWithColumnResponse(request.getColumnId(), ticketService.createInitial(request));
+    }
+
+    @Secured("ROLE_USER")
+    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/{ticketId}")
+    public TicketWithColumnResponse getBoardById(@PathVariable UUID ticketId) {
+        return ticketService.getTicketById(ticketId);
     }
 }

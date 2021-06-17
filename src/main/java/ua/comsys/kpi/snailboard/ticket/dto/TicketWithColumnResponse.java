@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTicketResponse {
+public class TicketWithColumnResponse {
     UUID columnId;
     TicketInfo ticketInfo;
 }
