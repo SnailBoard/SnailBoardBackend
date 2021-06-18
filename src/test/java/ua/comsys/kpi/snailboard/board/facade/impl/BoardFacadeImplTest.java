@@ -18,9 +18,7 @@ import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.utils.Converter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -66,7 +64,7 @@ class BoardFacadeImplTest {
 
     @Test
     void shouldConvertTeamsToDto() {
-        List<User> users = spy(new ArrayList<>());
+        Set<User> users = spy(new HashSet<>());
         Team team = Team.builder().id(UUID_1).users(users).build();
         List<Board> boards = new ArrayList<>();
         Board board1 = Board.builder().name(NAME_1).description(DESC_1).id(UUID_1).build();

@@ -18,6 +18,7 @@ import ua.comsys.kpi.snailboard.user.model.User;
 import ua.comsys.kpi.snailboard.utils.Converter;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +54,7 @@ class BoardToBoardByIdConverterTest {
         user.setFirstName(FIRST_NAME);
 
         Team team = new Team();
-        team.setUsers(Collections.singletonList(user));
+        team.setUsers(Set.of(user));
 
         UserInfoDto userInfoDto = new UserInfoDto();
         userInfoDto.setFirstName(FIRST_NAME);

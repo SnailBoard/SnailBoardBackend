@@ -49,7 +49,7 @@ public class Team {
     @JoinTable(name = "user_team",
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+    private Set<User> users;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private Set<Board> boards;

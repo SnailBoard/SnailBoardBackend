@@ -68,7 +68,7 @@ class TeamServiceImplTest {
     @Test
     void shouldAddUser() {
         User user = User.builder().id(UUID_VALUE).build();
-        Team team = Team.builder().users(new ArrayList<>()).build();
+        Team team = Team.builder().users(new HashSet<>()).build();
 
         when(teamRepository.findById(UUID_VALUE)).thenReturn(Optional.of(team));
 
@@ -80,7 +80,7 @@ class TeamServiceImplTest {
     @Test
     void shouldNotAddUserIfItsAlreadyInTeam() {
         User user = User.builder().id(UUID_VALUE).build();
-        Team team = Team.builder().users(Collections.singletonList(user)).build();
+        Team team = Team.builder().users(Set.of(user)).build();
 
         when(teamRepository.findById(UUID_VALUE)).thenReturn(Optional.of(team));
 

@@ -15,10 +15,7 @@ import ua.comsys.kpi.snailboard.team.service.TeamService;
 import ua.comsys.kpi.snailboard.user.facade.UserFacade;
 import ua.comsys.kpi.snailboard.user.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,8 +63,9 @@ class TeamFacadeImplTest {
     @Test
     void shouldMapTeamToResponse() {
         User user = new User();
+        User user2 = new User();
         List<Team> teams = new ArrayList<>();
-        List<User> users = List.of(user, user);
+        Set<User> users = Set.of(user, user2);
         teams.add(Team.builder().name(TEST_NAME).description(TEST_DESC).users(users).build());
         when(userService.getCurrentUserModel()).thenReturn(user);
         when(teamService.getTeamsByUser(user)).thenReturn(teams);

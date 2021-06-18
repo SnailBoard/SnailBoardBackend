@@ -37,7 +37,7 @@ public class TeamFacadeImpl implements TeamFacade {
     public void initialCreate(String name, String description, String image) {
         User currentUser = userFacade.getCurrentUserModel();
         Team team = Team.builder().name(name).description(description).
-                users(Collections.singletonList(currentUser)).imageId(image).build();
+                users(Set.of(currentUser)).imageId(image).build();
         teamService.create(team);
     }
 

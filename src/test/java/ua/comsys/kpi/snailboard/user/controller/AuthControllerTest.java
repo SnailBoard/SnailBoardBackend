@@ -32,6 +32,8 @@ class AuthControllerTest {
     private static final String USERNAME = "Test";
     private static final String FIRST_NAME = "Test";
     private static final String REFRESH_TOKEN = "test";
+    private static final String IMAGE = "image";
+
 
     private static final String URL_REGISTER = "/register";
     private static final String URL_AUTH = "/auth";
@@ -56,7 +58,7 @@ class AuthControllerTest {
 
     @Test
     void shouldPerformRegistration() throws Exception {
-        RegistrationRequest request = new RegistrationRequest(EMAIL, PASSWORD, USERNAME, FIRST_NAME);
+        RegistrationRequest request = new RegistrationRequest(EMAIL, PASSWORD, USERNAME, FIRST_NAME, IMAGE);
         mockMvc.perform(post(URL_REGISTER)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
@@ -67,7 +69,7 @@ class AuthControllerTest {
 
     @Test
     void shouldReturnErrorResponseOnSavedEmailUsage() throws Exception {
-        RegistrationRequest request = new RegistrationRequest(EMAIL, PASSWORD, USERNAME, FIRST_NAME);
+        RegistrationRequest request = new RegistrationRequest(EMAIL, PASSWORD, USERNAME, FIRST_NAME, IMAGE);
 
         doThrow(UserExistsException.class).when(authFacade).createUser(request);
 

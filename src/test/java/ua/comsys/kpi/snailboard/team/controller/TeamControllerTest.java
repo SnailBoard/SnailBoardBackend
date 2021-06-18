@@ -59,7 +59,7 @@ class TeamControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated());
 
-        verify(teamFacade).initialCreate(NAME, DESCRIPTION, "dsasdas");
+        verify(teamFacade).initialCreate(NAME, DESCRIPTION, "dsdas");
     }
 
     @Test
@@ -72,7 +72,7 @@ class TeamControllerTest {
 
     @Test
     void shouldGenerateAndSendInviteLinkForTeamToUser() throws Exception {
-        mockMvc.perform(post(URL_GENERATE_INVITE + TEAM_ID + EMAIL).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(URL_GENERATE_INVITE + TEAM_ID + EMAIL).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(teamFacade).generateAndSendLink(UUID_VALUE, EMAIL_VALUE);
