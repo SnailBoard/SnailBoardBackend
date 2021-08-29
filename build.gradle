@@ -5,6 +5,10 @@ plugins {
     id 'org.flywaydb.flyway' version '6.4.2'
 }
 
+def db_url = System.getenv('DB_URL') != null ? System.getenv('DB_URL') : "jdbc:postgresql://localhost:5432/snailboard"
+def db_user = System.getenv('POSTGRES_USER') != null ? System.getenv('POSTGRES_USER') : "root"
+def db_pass = System.getenv('POSTGRES_PASSWORD') != null ? System.getenv('POSTGRES_PASSWORD') : "root"
+
 group = 'ua.comsys.kpi'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -47,7 +51,7 @@ test {
 }
 
 flyway {
-    url = 'jdbc:postgresql://localhost:5432/snailboard'
-    user = 'postgres'
-    password = 'postgres'
+    url = db_url
+    user = db_user
+    password = db_pass
 }
