@@ -1,14 +1,14 @@
 package ua.comsys.kpi.snailboard.statistic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import ua.comsys.kpi.snailboard.board.Board;
-import ua.comsys.kpi.snailboard.user.User;
+import org.hibernate.annotations.UpdateTimestamp;
+import ua.comsys.kpi.snailboard.board.model.Board;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +16,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Statistic {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -25,7 +26,7 @@ public class Statistic {
     private UUID id;
 
     @Column
-    private Integer time;
+    private Integer ts;
 
     @Column
     private Integer tasks;
@@ -37,4 +38,12 @@ public class Statistic {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

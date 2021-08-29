@@ -1,13 +1,13 @@
 package ua.comsys.kpi.snailboard.notification;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import ua.comsys.kpi.snailboard.user.User;
+import org.hibernate.annotations.UpdateTimestamp;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class Notification {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -24,10 +25,18 @@ public class Notification {
     private UUID id;
 
     @Column
-    private String text;
+    private String message;
 
     @Column
     private String srcUrl;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

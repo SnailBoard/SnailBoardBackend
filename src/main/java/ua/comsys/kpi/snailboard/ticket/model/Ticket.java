@@ -1,21 +1,21 @@
 package ua.comsys.kpi.snailboard.ticket.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import ua.comsys.kpi.snailboard.column.Columns;
-import ua.comsys.kpi.snailboard.user.User;
+import org.hibernate.annotations.UpdateTimestamp;
+import ua.comsys.kpi.snailboard.column.model.Columns;
+import ua.comsys.kpi.snailboard.user.model.User;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,18 +27,49 @@ public class Ticket {
     private UUID id;
 
     @Column
-    private String text;
+    private String name;
+
+    @Column
+    private String description;
 
     @Column
     private Integer number;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
-    private List<TicketHistory> ticketHistories = new ArrayList<>();
+    @Column
+    private String imageId;
 
-    @ManyToMany(mappedBy = "tickets")
-    private List<User> users = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
+    private List<TicketHistory> ticketHistories;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "reporter_id")
+    private User reporter;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
+    private List<Ticket> subtasks;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "task_id")
+    private Ticket task;
+
+    @Column
+    private Integer storyPoints;
+
+    @Column
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "column_id")
     private Columns column;
+
+    private int columnPosition;
 }
