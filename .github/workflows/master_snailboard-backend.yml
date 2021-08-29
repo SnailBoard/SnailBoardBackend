@@ -23,8 +23,8 @@ jobs:
       with:
         java-version: '11'
 
-    - name: Build with Maven
-      run: mvn clean install
+    - name: Build with Gradle
+      run: ./gradlew bootJar
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
@@ -32,5 +32,5 @@ jobs:
         app-name: snailboard-backend
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D554D81CC0BE45F5A8AED96F4B78745A }}
-        package: ${{ github.workspace }}/target/*.jar
+        package: ${{ github.workspace }}/build/libs/*.jar
 
