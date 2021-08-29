@@ -24,7 +24,7 @@ jobs:
         java-version: '11'
 
     - name: Build with Gradle
-      run: ./gradlew bootJar
+      run: . ./gradlew bootJar
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
