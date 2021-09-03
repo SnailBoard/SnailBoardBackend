@@ -22,12 +22,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: '11'
-        
-    - name: set gradle
-      run: gradle wrapper 
 
     - name: Build with Gradle
-      run: . ./gradlew bootJar
+      run: gradle bootJar
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
