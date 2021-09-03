@@ -31,7 +31,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    compile group: 'commons-io', name: 'commons-io', version: '2.7'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     runtimeOnly 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'
